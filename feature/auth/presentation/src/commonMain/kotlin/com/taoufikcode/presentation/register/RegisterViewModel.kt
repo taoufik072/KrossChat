@@ -1,22 +1,32 @@
 package com.taoufikcode.presentation.register
 
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.graphics.Path.Companion.combine
+import androidx.compose.ui.text.style.TextDecoration.Companion.combine
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.taoufikcode.core.domain.auth.AuthService
+import com.taoufikcode.core.domain.util.DataError
 import com.taoufikcode.core.domain.util.onFailure
 import com.taoufikcode.core.domain.util.onSuccess
 import com.taoufikcode.core.domain.validation.PasswordValidator
+import com.taoufikcode.core.presentation.mapper.toUiText
 import com.taoufikcode.core.presentation.utils.UiText
 import com.taoufikcode.domain.EmailValidator
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import krosschat.feature.auth.presentation.generated.resources.Res
+import krosschat.feature.auth.presentation.generated.resources.error_account_exists
 import krosschat.feature.auth.presentation.generated.resources.error_invalid_email
 import krosschat.feature.auth.presentation.generated.resources.error_invalid_password
 import krosschat.feature.auth.presentation.generated.resources.error_invalid_username
@@ -32,6 +42,7 @@ class RegisterViewModel(
     val state = _state
         .onStart {
             if (!hasLoadedInitialData) {
+                observeValidationState()
                 /** Load initial data here **/
                 hasLoadedInitialData = true
             }
@@ -41,11 +52,50 @@ class RegisterViewModel(
             started = SharingStarted.WhileSubscribed(5_000L),
             initialValue = RegisterState()
         )
+    private val isEmailValidFlow = snapshotFlow { state.value.emailTextState.text.toString() }
+        .map { email -> EmailValidator.validate(email) }
+        .distinctUntilChanged()
+    private val isUsernameValidFlow = snapshotFlow { state.value.usernameTextState.text.toString() }
+        .map { username -> username.length in 3..20 }
+        .distinctUntilChanged()
+    private val isPasswordValidFlow = snapshotFlow { state.value.passwordTextState.text.toString() }
+        .map { password -> PasswordValidator.validate(password).isValidPassword }
+        .distinctUntilChanged()
+
+    val isRegisteringFlow = state.map { it.isRegistering }.distinctUntilChanged()
+
+    private fun observeValidationState() {
+        combine(
+            isEmailValidFlow,
+            isUsernameValidFlow,
+            isPasswordValidFlow,
+            isRegisteringFlow
+        ) { emailIsValid,
+            usernameIsValid,
+            passwordIsValid,
+            isRegistering ->
+
+            val allValid = emailIsValid && usernameIsValid && passwordIsValid
+            _state.update {
+                it.copy(
+                    canRegister = !isRegistering && allValid
+                )
+            }
+        }.launchIn(viewModelScope)
+    }
 
     fun onAction(action: RegisterAction) {
         when (action) {
             RegisterAction.OnLoginClick -> validateFormInputs()
             RegisterAction.OnRegisterClick -> register()
+            RegisterAction.OnTogglePasswordVisibilityClick -> {
+                _state.update {
+                    it.copy(
+                        isPasswordVisible = !it.isPasswordVisible
+                    )
+                }
+            }
+
             else -> Unit
         }
     }
@@ -115,15 +165,19 @@ class RegisterViewModel(
             ).onSuccess {
                 _state.update {
                     it.copy(
-                        isRegistering = true
+                        isRegistering = false
                     )
                 }
-            }.onFailure {
-                _state.update {
-                    it.copy(
-                        isRegistering = true
-                    )
+                _events.send(RegisterEvent.Success(email = email))
+            }.onFailure { error ->
+                val registrationError = when(error) {
+                    DataError.Remote.CONFLICT -> UiText.Resource(Res.string.error_account_exists)
+                    else -> error.toUiText()
                 }
+                _state.update { it.copy(
+                    isRegistering = false,
+                    registrationError = registrationError,
+                ) }
             }
         }
     }

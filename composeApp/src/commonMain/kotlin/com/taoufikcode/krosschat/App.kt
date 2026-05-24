@@ -2,6 +2,7 @@ package com.taoufikcode.krosschat
 
 import androidx.compose.runtime.Composable
 import com.taoufikcode.core.designsystem.theme.KrossChatTheme
+import com.taoufikcode.krosschat.navigation.NavigationRoot
 import com.taoufikcode.presentation.register.RegisterRoot
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -9,8 +10,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun App() {
     KrossChatTheme {
-        RegisterRoot(
-            onRegisterSuccess = {  }
-        )
+        NavigationRoot()
     }
 }

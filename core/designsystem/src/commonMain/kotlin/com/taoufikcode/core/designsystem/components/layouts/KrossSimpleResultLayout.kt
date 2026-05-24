@@ -22,7 +22,7 @@ import com.taoufikcode.core.designsystem.theme.extended
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun KrossSimpleSuccessLayout(
+fun KrossSimpleResultLayout(
     title: String,
     description: String,
     icon: @Composable () -> Unit,
@@ -73,7 +73,7 @@ fun KrossSimpleSuccessLayout(
 @Preview
 fun KrossSimpleSuccessLayoutPreview() {
     KrossChatTheme(darkTheme = true) {
-        KrossSimpleSuccessLayout(
+        KrossSimpleResultLayout(
             title = "Hello world!",
             description = "Test description",
             icon = {

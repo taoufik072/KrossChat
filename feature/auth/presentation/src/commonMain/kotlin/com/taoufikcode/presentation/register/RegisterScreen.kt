@@ -10,7 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.taoufikcode.core.designsystem.components.brand.KrossBrandLogo
 import com.taoufikcode.core.designsystem.components.buttons.KrossButton
 import com.taoufikcode.core.designsystem.components.buttons.KrossButtonStyle
@@ -33,17 +32,18 @@ import krosschat.feature.auth.presentation.generated.resources.username_placehol
 import krosschat.feature.auth.presentation.generated.resources.welcome_to_kross
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun RegisterRoot(
-    viewModel: RegisterViewModel = viewModel(),
+    viewModel: RegisterViewModel = koinViewModel(),
     onRegisterSuccess: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    ObserveAsEvents(viewModel.events){event ->
-        when(event){
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
             is RegisterEvent.Success -> {
                 onRegisterSuccess(event.email)
             }
@@ -112,25 +112,25 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             KrossButton(
+                modifier = Modifier.fillMaxWidth(),
                 text = stringResource(Res.string.register),
                 onClick = {
                     onAction(RegisterAction.OnRegisterClick)
                 },
                 enabled = state.canRegister,
                 isLoading = state.isRegistering,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
+
+                )
             Spacer(modifier = Modifier.height(8.dp))
             KrossButton(
+                modifier = Modifier.fillMaxWidth(),
                 text = stringResource(Res.string.login),
                 onClick = {
                     onAction(RegisterAction.OnLoginClick)
                 },
                 style = KrossButtonStyle.SECONDARY,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
+
+                )
         }
     }
 }

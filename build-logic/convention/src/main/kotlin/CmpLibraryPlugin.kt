@@ -11,7 +11,8 @@ class CmpLibraryPlugin() : Plugin<Project> {
                 apply ("com.taoufikcode.kmp.library")
                 apply("org.jetbrains.kotlin.plugin.compose")
                 apply("org.jetbrains.compose")
-           }
+                apply("org.jetbrains.kotlin.plugin.serialization")
+            }
             dependencies{
                 "commonMainImplementation"(libs.findLibrary("jetbrains-compose-ui").get())
                 "commonMainImplementation"(libs.findLibrary("jetbrains-compose-foundation").get())

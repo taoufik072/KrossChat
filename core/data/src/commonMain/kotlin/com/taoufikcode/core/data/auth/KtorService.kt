@@ -1,6 +1,7 @@
 package com.taoufikcode.core.data.auth
 
 import com.taoufikcode.core.data.dto.requests.RegisterDto
+import com.taoufikcode.core.data.network.get
 import com.taoufikcode.core.data.network.post
 import com.taoufikcode.core.domain.auth.AuthService
 import com.taoufikcode.core.domain.util.DataError
@@ -22,6 +23,13 @@ class KtorService(private val httpClient: HttpClient
                 username = username,
                 password = password
             )
+        )
+    }
+
+    override suspend fun verifyEmail(token: String): EmptyResult<DataError.Remote> {
+        return httpClient.get(
+            route = "auth/verify",
+            queryParams = mapOf("token" to token)
         )
     }
 }
