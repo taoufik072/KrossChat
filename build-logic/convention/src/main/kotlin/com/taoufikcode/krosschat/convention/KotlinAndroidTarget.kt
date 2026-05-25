@@ -11,7 +11,7 @@ internal fun Project.configureAndroidTarget(){
         androidTarget{
             @OptIn(ExperimentalKotlinGradlePluginApi::class)
             compilerOptions {
-                jvmTarget.set(JvmTarget.JVM_11)
+                jvmTarget.set(JvmTarget.JVM_17)
             }
         }
     }
