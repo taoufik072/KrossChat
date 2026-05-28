@@ -7,10 +7,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.taoufikcode.core.designsystem.theme.KrossChatTheme
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ChatListRoot(
-    viewModel: ChatListViewModel = viewModel()
+    viewModel: ChatListViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.taoufikcode.chat.presentation.chat_list.ChatListRoute
 import com.taoufikcode.core.designsystem.theme.KrossChatTheme
+import com.taoufikcode.core.presentation.utils.ObserveAsEvents
 import com.taoufikcode.krosschat.navigation.DeepLinkListener
 import com.taoufikcode.krosschat.navigation.NavigationRoot
 import com.taoufikcode.presentation.navigation.AuthGraphRoutes
@@ -29,6 +30,17 @@ fun App(
         }
     }
 
+    ObserveAsEvents(viewModel.events) { event ->
+        when(event) {
+            is MainEvent.OnSessionExpired -> {
+                navController.navigate(AuthGraphRoutes.Graph) {
+                    popUpTo(AuthGraphRoutes.Graph) {
+                        inclusive = false
+                    }
+                }
+            }
+        }
+    }
     KrossChatTheme {
         if(!state.isCheckingAuth) {
             NavigationRoot(

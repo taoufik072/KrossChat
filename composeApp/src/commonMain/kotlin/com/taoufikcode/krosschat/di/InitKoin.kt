@@ -1,5 +1,6 @@
 package com.taoufikcode.krosschat.di
 
+import com.taoufikcode.chat.presentation.chat_list.di.chatPresentationModule
 import com.taoufikcode.core.data.di.coreDataModule
 import com.taoufikcode.presentation.di.authPresentationModule
 import org.koin.core.context.startKoin
@@ -11,7 +12,8 @@ fun initKoin(config: KoinAppDeclaration? = null) {
         modules(
             coreDataModule,
             authPresentationModule,
-            appModule
+            appModule,
+            chatPresentationModule
         )
     }
 }
