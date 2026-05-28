@@ -3,12 +3,12 @@ package com.taoufikcode.core.designsystem.theme
 import androidx.compose.ui.graphics.Color
 
 // Brand colors
-val KrossBrand1000 = Color(0xFF092E2D)
-val KrossBrand900 = Color(0xFF106461)
-val KrossBrand600 = Color(0xFF19BA87)
-val KrossBrand500 = Color(0xFF4DDEAB)
-val KrossBrand500Alpha40 = Color(0x664DDEAB)
-val KrossBrand100 = Color(0xFFCEF5E4)
+val KrossIndigo1000 = Color(0xFF07071E)
+val KrossIndigo900  = Color(0xFF0D0D50)
+val KrossIndigo600  = Color(0xFF1E20CC)
+val KrossIndigo500  = Color(0xFF5B5EF4)
+val KrossIndigo500Alpha40 = Color(0x665B5EF4)
+val KrossIndigo100  = Color(0xFFDDDFFE)
 
 // Base Colors
 val KrossBase1000 = Color(0xFF101C28)

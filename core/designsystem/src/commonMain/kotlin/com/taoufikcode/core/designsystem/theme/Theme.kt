@@ -68,13 +68,13 @@ data class ExtendedColors(
 )
 
 val LightExtendedColors = ExtendedColors(
-    primaryHover = KrossBrand600,
+    primaryHover = KrossIndigo600,
     destructiveHover = KrossRed600,
     destructiveSecondaryOutline = KrossRed200,
     disabledOutline = KrossBase200,
     disabledFill = KrossBase150,
-    successOutline = KrossBrand100,
-    success = KrossBrand600,
+    successOutline = KrossIndigo100,
+    success = KrossIndigo600,
     onSuccess = KrossBase0,
     secondaryFill = KrossBase100,
 
@@ -113,13 +113,13 @@ val LightExtendedColors = ExtendedColors(
 )
 
 val DarkExtendedColors = ExtendedColors(
-    primaryHover = KrossBrand600,
+    primaryHover = KrossIndigo600,
     destructiveHover = KrossRed600,
     destructiveSecondaryOutline = KrossRed200,
     disabledOutline = KrossBase900,
     disabledFill = KrossBase1000,
-    successOutline = KrossBrand500Alpha40,
-    success = KrossBrand500,
+    successOutline = KrossIndigo500Alpha40,
+    success = KrossIndigo500,
     onSuccess = KrossBase1000,
     secondaryFill = KrossBase900,
 
@@ -158,27 +158,27 @@ val DarkExtendedColors = ExtendedColors(
 )
 
 val LightColorScheme = lightColorScheme(
-    primary = KrossBrand500,
-    onPrimary = KrossBrand1000,
-    primaryContainer = KrossBrand100,
-    onPrimaryContainer = KrossBrand900,
+    primary = KrossIndigo500,
+    onPrimary = KrossIndigo1000,
+    primaryContainer = KrossIndigo100,
+    onPrimaryContainer = KrossIndigo900,
 
     secondary = KrossBase700,
     onSecondary = KrossBase0,
     secondaryContainer = KrossBase100,
     onSecondaryContainer = KrossBase900,
 
-    tertiary = KrossBrand900,
+    tertiary = KrossIndigo900,
     onTertiary = KrossBase0,
-    tertiaryContainer = KrossBrand100,
-    onTertiaryContainer = KrossBrand1000,
+    tertiaryContainer = KrossIndigo100,
+    onTertiaryContainer = KrossIndigo1000,
 
     error = KrossRed500,
     onError = KrossBase0,
     errorContainer = KrossRed200,
     onErrorContainer = KrossRed600,
 
-    background = KrossBrand1000,
+    background = KrossIndigo1000,
     onBackground = KrossBase0,
     surface = KrossBase0,
     onSurface = KrossBase1000,
@@ -190,20 +190,20 @@ val LightColorScheme = lightColorScheme(
 )
 
 val DarkColorScheme = darkColorScheme(
-    primary = KrossBrand500,
-    onPrimary = KrossBrand1000,
-    primaryContainer = KrossBrand900,
-    onPrimaryContainer = KrossBrand500,
+    primary = KrossIndigo500,
+    onPrimary = KrossIndigo1000,
+    primaryContainer = KrossIndigo900,
+    onPrimaryContainer = KrossIndigo500,
 
     secondary = KrossBase400,
     onSecondary = KrossBase1000,
     secondaryContainer = KrossBase900,
     onSecondaryContainer = KrossBase150,
 
-    tertiary = KrossBrand500,
+    tertiary = KrossIndigo500,
     onTertiary = KrossBase1000,
-    tertiaryContainer = KrossBrand900,
-    onTertiaryContainer = KrossBrand500,
+    tertiaryContainer = KrossIndigo900,
+    onTertiaryContainer = KrossIndigo500,
 
     error = KrossRed500,
     onError = KrossBase0,
