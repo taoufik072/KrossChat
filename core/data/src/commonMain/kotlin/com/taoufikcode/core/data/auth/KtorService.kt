@@ -4,6 +4,7 @@ import com.taoufikcode.core.data.dto.AuthInfoDto
 import com.taoufikcode.core.data.dto.requests.EmailRequest
 import com.taoufikcode.core.data.dto.requests.LoginRequest
 import com.taoufikcode.core.data.dto.requests.RegisterRequest
+import com.taoufikcode.core.data.dto.requests.ResetPasswordRequest
 import com.taoufikcode.core.data.dto.toDomain
 import com.taoufikcode.core.data.network.get
 import com.taoufikcode.core.data.network.post
@@ -62,6 +63,19 @@ class KtorService(private val httpClient: HttpClient
         return httpClient.post<EmailRequest, Unit>(
             route = "/auth/forgot-password",
             body = EmailRequest(email)
+        )
+    }
+
+    override suspend fun resetPassword(
+        newPassword: String,
+        token: String
+    ): EmptyResult<DataError.Remote> {
+        return httpClient.post(
+            route = "/auth/reset-password",
+            body = ResetPasswordRequest(
+                newPassword = newPassword,
+                token = token
+            )
         )
     }
 }

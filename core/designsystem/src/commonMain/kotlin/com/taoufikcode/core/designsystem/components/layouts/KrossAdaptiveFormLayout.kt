@@ -31,6 +31,7 @@ import com.taoufikcode.core.designsystem.components.brand.KrossBrandLogo
 import com.taoufikcode.core.designsystem.theme.KrossChatTheme
 import com.taoufikcode.core.designsystem.theme.extended
 import com.taoufikcode.core.presentation.utils.DeviceConfiguration
+import com.taoufikcode.core.presentation.utils.clearFocusOnTap
 import com.taoufikcode.core.presentation.utils.currentDeviceConfiguration
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -54,6 +55,7 @@ fun KrossAdaptiveFormLayout(
         DeviceConfiguration.MOBILE_PORTRAIT -> {
             KrossSurface(
                 modifier = modifier
+                    .clearFocusOnTap()
                     .consumeWindowInsets(WindowInsets.navigationBars)
                     .consumeWindowInsets(WindowInsets.displayCutout),
                 header = {

@@ -19,6 +19,7 @@ import com.taoufikcode.core.designsystem.components.brand.KrossBrandLogo
 import com.taoufikcode.core.designsystem.components.buttons.KrossButton
 import com.taoufikcode.core.designsystem.components.buttons.KrossButtonStyle
 import com.taoufikcode.core.designsystem.components.layouts.KrossAdaptiveFormLayout
+import com.taoufikcode.core.designsystem.components.layouts.KrossSnackBarScaffold
 import com.taoufikcode.core.designsystem.components.textfields.KrossPasswordTextField
 import com.taoufikcode.core.designsystem.components.textfields.KrossTextField
 import com.taoufikcode.core.designsystem.theme.KrossChatTheme
@@ -44,8 +45,8 @@ fun LoginRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    ObserveAsEvents(viewModel.events){ event ->
-        when(event){
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
             LoginEvent.Success -> onLoginSuccess()
         }
     }
@@ -68,69 +69,71 @@ fun LoginScreen(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
 ) {
-    KrossAdaptiveFormLayout(
-        headerText = stringResource(Res.string.welcome_back),
-        errorText = state.error?.asString(),
-        logo = {
-            KrossBrandLogo()
-        },
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        KrossTextField(
-            state = state.emailTextFieldState,
-            placeholder = stringResource(Res.string.email_placeholder),
-            keyboardType = KeyboardType.Email,
-            singleLine = true,
-            modifier = Modifier
-                .fillMaxWidth(),
-            title = stringResource(Res.string.email)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        KrossPasswordTextField(
-            state = state.passwordTextFieldState,
-            placeholder = stringResource(Res.string.password),
-            isPasswordVisible = state.isPasswordVisible,
-            onToggleVisibilityClick = {
-                onAction(LoginAction.OnTogglePasswordVisibility)
+    KrossSnackBarScaffold {
+        KrossAdaptiveFormLayout(
+            headerText = stringResource(Res.string.welcome_back),
+            errorText = state.error?.asString(),
+            logo = {
+                KrossBrandLogo()
             },
-            title = stringResource(Res.string.password),
             modifier = Modifier
-                .fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(Res.string.forgot_password),
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.tertiary,
-            modifier = Modifier
-                .align(Alignment.End)
-                .clickable {
-                    onAction(LoginAction.OnForgotPasswordClick)
-                }
-        )
-        Spacer(modifier = Modifier.height(24.dp))
+                .fillMaxSize()
+        ) {
+            KrossTextField(
+                state = state.emailTextFieldState,
+                placeholder = stringResource(Res.string.email_placeholder),
+                keyboardType = KeyboardType.Email,
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                title = stringResource(Res.string.email)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            KrossPasswordTextField(
+                state = state.passwordTextFieldState,
+                placeholder = stringResource(Res.string.password),
+                isPasswordVisible = state.isPasswordVisible,
+                onToggleVisibilityClick = {
+                    onAction(LoginAction.OnTogglePasswordVisibility)
+                },
+                title = stringResource(Res.string.password),
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(Res.string.forgot_password),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.tertiary,
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .clickable {
+                        onAction(LoginAction.OnForgotPasswordClick)
+                    }
+            )
+            Spacer(modifier = Modifier.height(24.dp))
 
-        KrossButton(
-            text = stringResource(Res.string.login),
-            onClick = {
-                onAction(LoginAction.OnLoginClick)
-            },
-            enabled = state.canLogin,
-            isLoading = state.isLoggingIn,
-            modifier = Modifier
-                .fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        KrossButton(
-            text = stringResource(Res.string.create_account),
-            onClick = {
-                onAction(LoginAction.OnSignUpClick)
-            },
-            style = KrossButtonStyle.SECONDARY,
-            modifier = Modifier
-                .fillMaxWidth()
-        )
+            KrossButton(
+                text = stringResource(Res.string.login),
+                onClick = {
+                    onAction(LoginAction.OnLoginClick)
+                },
+                enabled = state.canLogin,
+                isLoading = state.isLoggingIn,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            KrossButton(
+                text = stringResource(Res.string.create_account),
+                onClick = {
+                    onAction(LoginAction.OnSignUpClick)
+                },
+                style = KrossButtonStyle.SECONDARY,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
     }
 }
 

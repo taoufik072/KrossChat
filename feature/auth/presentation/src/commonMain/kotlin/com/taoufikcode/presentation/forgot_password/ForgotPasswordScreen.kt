@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.taoufikcode.core.designsystem.components.brand.KrossBrandLogo
 import com.taoufikcode.core.designsystem.components.buttons.KrossButton
 import com.taoufikcode.core.designsystem.components.layouts.KrossAdaptiveFormLayout
+import com.taoufikcode.core.designsystem.components.layouts.KrossSnackBarScaffold
 import com.taoufikcode.core.designsystem.components.textfields.KrossTextField
 import com.taoufikcode.core.designsystem.theme.KrossChatTheme
 import com.taoufikcode.core.designsystem.theme.extended
@@ -45,45 +46,47 @@ fun ForgotPasswordScreen(
     state: ForgotPasswordState,
     onAction: (ForgotPasswordAction) -> Unit,
 ) {
-    KrossAdaptiveFormLayout(
-        headerText = stringResource(Res.string.forgot_password),
-        errorText = state.errorText?.asString(),
-        logo = {
-            KrossBrandLogo()
-        }
-    ) {
-        KrossTextField(
-            state = state.emailTextFieldState,
-            modifier = Modifier
-                .fillMaxWidth(),
-            placeholder = stringResource(Res.string.email_placeholder),
-            title = stringResource(Res.string.email),
-            isError = state.errorText != null,
-            supportingText = state.errorText?.asString(),
-            keyboardType = KeyboardType.Email,
-            singleLine = true
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        KrossButton(
-            text = stringResource(Res.string.submit),
-            onClick = {
-                onAction(ForgotPasswordAction.OnSubmitClick)
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-            enabled = !state.isLoading && state.canSubmit,
-            isLoading = state.isLoading
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        if(state.isEmailSentSuccessfully) {
-            Text(
-                text = stringResource(Res.string.forgot_password_email_sent_successfully),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.extended.success,
+    KrossSnackBarScaffold {
+        KrossAdaptiveFormLayout(
+            headerText = stringResource(Res.string.forgot_password),
+            errorText = state.errorText?.asString(),
+            logo = {
+                KrossBrandLogo()
+            }
+        ) {
+            KrossTextField(
+                state = state.emailTextFieldState,
                 modifier = Modifier
                     .fillMaxWidth(),
-                textAlign = TextAlign.Center
+                placeholder = stringResource(Res.string.email_placeholder),
+                title = stringResource(Res.string.email),
+                isError = state.errorText != null,
+                supportingText = state.errorText?.asString(),
+                keyboardType = KeyboardType.Email,
+                singleLine = true
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            KrossButton(
+                text = stringResource(Res.string.submit),
+                onClick = {
+                    onAction(ForgotPasswordAction.OnSubmitClick)
+                },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                enabled = !state.isLoading && state.canSubmit,
+                isLoading = state.isLoading
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            if (state.isEmailSentSuccessfully) {
+                Text(
+                    text = stringResource(Res.string.forgot_password_email_sent_successfully),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.extended.success,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }

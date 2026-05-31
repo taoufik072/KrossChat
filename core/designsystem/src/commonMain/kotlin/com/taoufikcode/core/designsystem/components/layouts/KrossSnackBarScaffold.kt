@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun KrossSnackBarScaffold(
-    snackBarHostState: SnackbarHostState,
+    snackBarHostState: SnackbarHostState? = null,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
@@ -26,11 +26,13 @@ fun KrossSnackBarScaffold(
             .union(WindowInsets.displayCutout)
             .union(WindowInsets.ime),
         snackbarHost = {
-            SnackbarHost(
-                hostState = snackBarHostState,
-                modifier = Modifier
-                    .padding(bottom = 24.dp)
-            )
+            snackBarHostState?.let {
+                SnackbarHost(
+                    hostState = it,
+                    modifier = Modifier
+                        .padding(bottom = 24.dp)
+                )
+            }
         }
     ) { innerPadding ->
         Box(

@@ -17,6 +17,7 @@ import com.taoufikcode.core.designsystem.components.buttons.KrossButton
 import com.taoufikcode.core.designsystem.components.buttons.KrossButtonStyle
 import com.taoufikcode.core.designsystem.components.layouts.KrossAdaptiveResultLayout
 import com.taoufikcode.core.designsystem.components.layouts.KrossSimpleResultLayout
+import com.taoufikcode.core.designsystem.components.layouts.KrossSnackBarScaffold
 import com.taoufikcode.core.designsystem.theme.KrossChatTheme
 import com.taoufikcode.core.presentation.utils.ObserveAsEvents
 import com.taoufikcode.presentation.register.RegisterAction
@@ -36,15 +37,15 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun RegisterSuccessRoot(
     viewModel: RegisterSuccessViewModel = koinViewModel(),
-    onLoginClick:() -> Unit
+    onLoginClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     ObserveAsEvents(viewModel.events) { event ->
-        when(event) {
+        when (event) {
             is RegisterSuccessEvent.ResendVerificationEmailSuccess -> {
-                snackbarHostState.showSnackbar(
+                snackBarHostState.showSnackbar(
                     message = getString(
                         resource = Res.string.resent_verification_email
                     )
@@ -54,13 +55,14 @@ fun RegisterSuccessRoot(
     }
     RegisterSuccessScreen(
         state = state,
-        onAction = { action->
-            when(action){
+        onAction = { action ->
+            when (action) {
                 is RegisterSuccessAction.OnLoginClick -> onLoginClick()
                 else -> Unit
             }
             viewModel.onAction(action)
-        }
+        },
+        snackBarHostState = snackBarHostState
     )
 }
 
@@ -68,33 +70,38 @@ fun RegisterSuccessRoot(
 fun RegisterSuccessScreen(
     state: RegisterSuccessState,
     onAction: (RegisterSuccessAction) -> Unit,
+    snackBarHostState: SnackbarHostState,
 ) {
-    KrossAdaptiveResultLayout {
-        KrossSimpleResultLayout(
-            title = stringResource(Res.string.account_successfully_created),
-            description = stringResource(
-                Res.string.verification_email_sent_to_x,
-                state.registeredEmail
-            ),
-            icon = { KrossSuccessIcon() },
-            primaryButton = {
-                KrossButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(Res.string.login),
-                    onClick = { onAction(RegisterSuccessAction.OnLoginClick) }
-                )
-            },
-            secondaryButton = {
-                KrossButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(Res.string.resend_verification_email),
-                    onClick = { onAction(RegisterSuccessAction.OnResendVerificationEmail) },
-                    enabled = !state.isResendingVerificationEmail,
-                    isLoading = state.isResendingVerificationEmail,
-                    style = KrossButtonStyle.SECONDARY
-                )
-            }
-        )
+    KrossSnackBarScaffold(
+        snackBarHostState = snackBarHostState
+    ) {
+        KrossAdaptiveResultLayout {
+            KrossSimpleResultLayout(
+                title = stringResource(Res.string.account_successfully_created),
+                description = stringResource(
+                    Res.string.verification_email_sent_to_x,
+                    state.registeredEmail
+                ),
+                icon = { KrossSuccessIcon() },
+                primaryButton = {
+                    KrossButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(Res.string.login),
+                        onClick = { onAction(RegisterSuccessAction.OnLoginClick) }
+                    )
+                },
+                secondaryButton = {
+                    KrossButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(Res.string.resend_verification_email),
+                        onClick = { onAction(RegisterSuccessAction.OnResendVerificationEmail) },
+                        enabled = !state.isResendingVerificationEmail,
+                        isLoading = state.isResendingVerificationEmail,
+                        style = KrossButtonStyle.SECONDARY
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -107,7 +114,8 @@ private fun Preview() {
                 registeredEmail = "james.a.garfield@examplepetstore.com",
                 isResendingVerificationEmail = false
             ),
-            onAction = {}
+            onAction = {},
+            snackBarHostState = remember { SnackbarHostState() }
         )
     }
 }

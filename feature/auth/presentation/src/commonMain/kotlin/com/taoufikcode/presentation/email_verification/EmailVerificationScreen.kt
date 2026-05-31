@@ -23,6 +23,7 @@ import com.taoufikcode.core.designsystem.components.buttons.KrossButton
 import com.taoufikcode.core.designsystem.components.buttons.KrossButtonStyle
 import com.taoufikcode.core.designsystem.components.layouts.KrossAdaptiveResultLayout
 import com.taoufikcode.core.designsystem.components.layouts.KrossSimpleResultLayout
+import com.taoufikcode.core.designsystem.components.layouts.KrossSnackBarScaffold
 import com.taoufikcode.core.designsystem.theme.KrossChatTheme
 import com.taoufikcode.core.designsystem.theme.extended
 import krosschat.feature.auth.presentation.generated.resources.Res
@@ -62,57 +63,59 @@ fun EmailVerificationScreen(
     state: EmailVerificationState,
     onAction: (EmailVerificationAction) -> Unit,
 ) {
-    KrossAdaptiveResultLayout {
-        when {
-            state.isVerifying -> {
-                VerifyingContent(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
+    KrossSnackBarScaffold {
+        KrossAdaptiveResultLayout {
+            when {
+                state.isVerifying -> {
+                    VerifyingContent(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+                }
 
-            state.isVerified -> {
-                KrossSimpleResultLayout(
-                    title = stringResource(Res.string.email_verified_successfully),
-                    description = stringResource(Res.string.email_verified_successfully_desc),
-                    icon = {
-                        KrossSuccessIcon()
-                    },
-                    primaryButton = {
-                        KrossButton(
-                            text = stringResource(Res.string.login),
-                            onClick = {
-                                onAction(EmailVerificationAction.OnLoginClick)
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                )
-            }
+                state.isVerified -> {
+                    KrossSimpleResultLayout(
+                        title = stringResource(Res.string.email_verified_successfully),
+                        description = stringResource(Res.string.email_verified_successfully_desc),
+                        icon = {
+                            KrossSuccessIcon()
+                        },
+                        primaryButton = {
+                            KrossButton(
+                                text = stringResource(Res.string.login),
+                                onClick = {
+                                    onAction(EmailVerificationAction.OnLoginClick)
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    )
+                }
 
-            else -> {
-                KrossSimpleResultLayout(
-                    title = stringResource(Res.string.email_verified_failed),
-                    description = stringResource(Res.string.email_verified_failed_desc),
-                    icon = {
-                        Spacer(modifier = Modifier.height(32.dp))
-                        KrossFailureIcon(
-                            modifier = Modifier
-                                .size(80.dp)
-                        )
-                        Spacer(modifier = Modifier.height(32.dp))
-                    },
-                    primaryButton = {
-                        KrossButton(
-                            text = stringResource(Res.string.close),
-                            onClick = {
-                                onAction(EmailVerificationAction.OnCloseClick)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            style = KrossButtonStyle.SECONDARY
-                        )
-                    }
-                )
+                else -> {
+                    KrossSimpleResultLayout(
+                        title = stringResource(Res.string.email_verified_failed),
+                        description = stringResource(Res.string.email_verified_failed_desc),
+                        icon = {
+                            Spacer(modifier = Modifier.height(32.dp))
+                            KrossFailureIcon(
+                                modifier = Modifier
+                                    .size(80.dp)
+                            )
+                            Spacer(modifier = Modifier.height(32.dp))
+                        },
+                        primaryButton = {
+                            KrossButton(
+                                text = stringResource(Res.string.close),
+                                onClick = {
+                                    onAction(EmailVerificationAction.OnCloseClick)
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                style = KrossButtonStyle.SECONDARY
+                            )
+                        }
+                    )
+                }
             }
         }
     }
