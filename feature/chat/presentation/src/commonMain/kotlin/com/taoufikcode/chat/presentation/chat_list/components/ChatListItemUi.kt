@@ -45,6 +45,7 @@ fun ChatListItemUi(
     modifier: Modifier = Modifier
 ) {
     val isGroupChat = chat.otherParticipants.size > 1
+
     Row(
         modifier = modifier
             .height(IntrinsicSize.Min)
@@ -108,7 +109,7 @@ fun ChatListItemUi(
                 }
             }
 
-            if (chat.lastMessage != null) {
+            chat.lastMessage?.let { lastMessage ->
                 val previewMessage = buildAnnotatedString {
                     withStyle(
                         style = SpanStyle(
@@ -118,7 +119,7 @@ fun ChatListItemUi(
                     ) {
                         append(chat.lastMessageSenderUsername + ":")
                     }
-                    append(chat.lastMessage.content)
+                    append(lastMessage.content)
                 }
                 Text(
                     text = previewMessage,
