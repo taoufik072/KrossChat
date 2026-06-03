@@ -38,7 +38,7 @@ import krosschat.core.designsystem.generated.resources.Res as DesignSystemRes
 
 @Composable
 fun ChatListHeader(
-    localParticipant: ChatParticipantUi,
+    currentUser: ChatParticipantUi?,
     isUserMenuOpen: Boolean,
     onUserAvatarClick: () -> Unit,
     onDismissMenu: () -> Unit,
@@ -66,7 +66,7 @@ fun ChatListHeader(
             )
             Spacer(modifier = Modifier.weight(1f))
             ProfileAvatarSection(
-                localParticipant = localParticipant,
+                currentUser = currentUser,
                 isMenuOpen = isUserMenuOpen,
                 onClick = onUserAvatarClick,
                 onDismissMenu = onDismissMenu,
@@ -79,7 +79,7 @@ fun ChatListHeader(
 
 @Composable
 fun ProfileAvatarSection(
-    localParticipant: ChatParticipantUi,
+    currentUser: ChatParticipantUi?,
     isMenuOpen: Boolean,
     onClick: () -> Unit,
     onDismissMenu: () -> Unit,
@@ -90,12 +90,13 @@ fun ProfileAvatarSection(
     Box(
         modifier = modifier
     ) {
-        KrossAvatarPhoto(
-            displayText = localParticipant.initials,
-            imageUrl = localParticipant.imageUrl,
-            onClick = onClick
-        )
-
+        if (currentUser != null) {
+            KrossAvatarPhoto(
+                displayText = currentUser.initials,
+                imageUrl = currentUser.imageUrl,
+                onClick = onClick
+            )
+        }
         DropdownMenu(
             expanded = isMenuOpen,
             shape = RoundedCornerShape(16.dp),
@@ -166,7 +167,7 @@ fun ChatListHeaderPreview() {
                 .fillMaxSize()
         ) {
             ChatListHeader(
-                localParticipant = ChatParticipantUi(
+                currentUser = ChatParticipantUi(
                     id = "1",
                     username = "Taoufik",
                     initials = "TA",
