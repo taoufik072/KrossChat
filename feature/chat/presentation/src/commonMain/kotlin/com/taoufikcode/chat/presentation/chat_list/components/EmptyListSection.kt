@@ -17,14 +17,13 @@ import com.taoufikcode.core.presentation.utils.DeviceConfiguration
 import com.taoufikcode.core.presentation.utils.currentDeviceConfiguration
 import krosschat.feature.chat.presentation.generated.resources.Res
 import krosschat.feature.chat.presentation.generated.resources.empty_chat
-import krosschat.feature.chat.presentation.generated.resources.no_messages
-import krosschat.feature.chat.presentation.generated.resources.no_messages_subtitle
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun EmptyChatSection(
-    modifier: Modifier = Modifier
+fun EmptyListSection(
+    modifier: Modifier = Modifier,
+    title: String,
+    description: String,
 ) {
     val configuration = currentDeviceConfiguration()
     Column(
@@ -34,7 +33,7 @@ fun EmptyChatSection(
     ) {
         Image(
             painter = painterResource(Res.drawable.empty_chat),
-            contentDescription = stringResource(Res.string.no_messages),
+            contentDescription = title,
             modifier = Modifier.size(
                 if (configuration == DeviceConfiguration.MOBILE_LANDSCAPE) {
                     125.dp
@@ -45,12 +44,12 @@ fun EmptyChatSection(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = stringResource(Res.string.no_messages),
+            text = title,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.extended.textPrimary
         )
         Text(
-            text = stringResource(Res.string.no_messages_subtitle),
+            text = description,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.extended.textSecondary
         )

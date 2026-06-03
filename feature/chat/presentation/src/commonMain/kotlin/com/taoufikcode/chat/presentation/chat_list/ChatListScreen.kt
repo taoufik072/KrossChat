@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.taoufikcode.chat.presentation.chat_list.components.ChatListHeader
 import com.taoufikcode.chat.presentation.chat_list.components.ChatListItemUi
-import com.taoufikcode.chat.presentation.chat_list.components.EmptyChatSection
+import com.taoufikcode.chat.presentation.chat_list.components.EmptyListSection
 import com.taoufikcode.chat.presentation.model.ChatUi
 import com.taoufikcode.core.designsystem.components.brand.KrossHorizontalDivider
 import com.taoufikcode.core.designsystem.components.buttons.KrossFloatingActionButton
@@ -40,6 +40,8 @@ import krosschat.feature.chat.presentation.generated.resources.create_chat
 import krosschat.feature.chat.presentation.generated.resources.do_you_want_to_logout
 import krosschat.feature.chat.presentation.generated.resources.do_you_want_to_logout_desc
 import krosschat.feature.chat.presentation.generated.resources.logout
+import krosschat.feature.chat.presentation.generated.resources.no_chats
+import krosschat.feature.chat.presentation.generated.resources.no_chats_subtitle
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -57,8 +59,7 @@ fun ChatListRoot(
     val snackbarHostState = remember { SnackbarHostState() }
 
     ChatListScreen(
-        state = state,
-        onAction = { action ->
+        state = state, onAction = { action ->
             when (action) {
                 is ChatListAction.OnChatClick -> onChatClick(action.chat)
                 ChatListAction.OnConfirmLogout -> onConfirmLogoutClick()
@@ -67,20 +68,16 @@ fun ChatListRoot(
                 else -> Unit
             }
             viewModel.onAction(action)
-        },
-        snackbarHostState = snackbarHostState
+        }, snackbarHostState = snackbarHostState
     )
 }
 
 @Composable
 fun ChatListScreen(
-    state: ChatListState,
-    onAction: (ChatListAction) -> Unit,
-    snackbarHostState: SnackbarHostState
+    state: ChatListState, onAction: (ChatListAction) -> Unit, snackbarHostState: SnackbarHostState
 ) {
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.extended.surfaceLower,
         contentWindowInsets = WindowInsets.safeDrawing,
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -88,19 +85,15 @@ fun ChatListScreen(
             KrossFloatingActionButton(
                 onClick = {
                     onAction(ChatListAction.OnCreateChatClick)
-                }
-            ) {
+                }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = stringResource(Res.string.create_chat)
                 )
             }
-        }
-    ) { innerPadding ->
+        }) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+            modifier = Modifier.fillMaxSize().padding(innerPadding),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -118,8 +111,7 @@ fun ChatListScreen(
                 },
                 onProfileSettingsClick = {
                     onAction(ChatListAction.OnProfileSettingsClick)
-                }
-            )
+                })
             when {
                 state.isLoading -> {
                     CircularProgressIndicator(
@@ -128,35 +120,28 @@ fun ChatListScreen(
                 }
 
                 state.chats.isEmpty() -> {
-                    EmptyChatSection(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = 8.dp
-                            )
-                    )
+                    EmptyListSection(
+                        modifier = Modifier.weight(1f).fillMaxWidth().padding(
+                            horizontal = 8.dp
+                        ),
+                        title = stringResource(Res.string.no_chats),
+                        description = stringResource(Res.string.no_chats_subtitle),
+
+                        )
                 }
 
                 else -> {
                     LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
+                        modifier = Modifier.fillMaxWidth().weight(1f)
                     ) {
                         items(
-                            items = state.chats,
-                            key = { it.id }
-                        ) { chatUi ->
+                            items = state.chats, key = { it.id }) { chatUi ->
                             ChatListItemUi(
                                 chat = chatUi,
                                 isSelected = chatUi.id == state.selectedChatId,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        onAction(ChatListAction.OnChatClick(chatUi))
-                                    }
-                            )
+                                modifier = Modifier.fillMaxWidth().clickable {
+                                    onAction(ChatListAction.OnChatClick(chatUi))
+                                })
                             KrossHorizontalDivider()
                         }
                     }
@@ -191,7 +176,6 @@ private fun Preview() {
         ChatListScreen(
             state = ChatListState(),
             onAction = {},
-            snackbarHostState = remember { SnackbarHostState() }
-        )
+            snackbarHostState = remember { SnackbarHostState() })
     }
 }

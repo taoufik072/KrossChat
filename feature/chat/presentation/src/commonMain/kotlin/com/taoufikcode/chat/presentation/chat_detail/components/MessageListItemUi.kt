@@ -23,10 +23,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun MessageListItemUi(
     messageUi: MessageUi,
-    onMessageLongClick: () -> Unit,
+    onMessageLongClick: (MessageUi.CurrentUserMessage) -> Unit,
     onDismissMessageMenu: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onRetryClick: () -> Unit,
+    onDeleteClick: (MessageUi.CurrentUserMessage) -> Unit,
+    onRetryClick: (MessageUi.CurrentUserMessage) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -40,13 +40,13 @@ fun MessageListItemUi(
                 )
             }
 
-            is MessageUi.LocalUserMessage -> {
+            is MessageUi.CurrentUserMessage -> {
                 CurrentUserMessage(
                     message = messageUi,
-                    onMessageLongClick = onMessageLongClick,
+                    onMessageLongClick = { onMessageLongClick(messageUi) },
                     onDismissMessageMenu = onDismissMessageMenu,
-                    onDeleteClick = onDeleteClick,
-                    onRetryClick = onRetryClick
+                    onDeleteClick = { onDeleteClick(messageUi) },
+                    onRetryClick = { onRetryClick(messageUi) }
                 )
             }
 
@@ -87,7 +87,7 @@ private fun DateSeparatorUi(
 fun MessageListItemLocalMessageUiPreview() {
     KrossChatTheme {
         MessageListItemUi(
-            messageUi = MessageUi.LocalUserMessage(
+            messageUi = MessageUi.CurrentUserMessage(
                 id = "1",
                 content = "Hello world, this is a preview message that spans multiple lines",
                 deliveryStatus = ChatMessageDeliveryStatus.SENT,
@@ -110,7 +110,7 @@ fun MessageListItemLocalMessageUiPreview() {
 fun MessageListItemLocalMessageRetryUiPreview() {
     KrossChatTheme {
         MessageListItemUi(
-            messageUi = MessageUi.LocalUserMessage(
+            messageUi = MessageUi.CurrentUserMessage(
                 id = "1",
                 content = "Hello world, this is a preview message that spans multiple lines",
                 deliveryStatus = ChatMessageDeliveryStatus.FAILED,

@@ -4,24 +4,25 @@ import com.taoufikcode.chat.domain.models.ChatMessageDeliveryStatus
 import com.taoufikcode.core.designsystem.components.avatar.ChatParticipantUi
 import com.taoufikcode.core.presentation.utils.UiText
 
-sealed interface MessageUi {
-    data class LocalUserMessage(
-        val id: String,
+
+sealed class MessageUi(open val id: String) {
+    data class CurrentUserMessage(
+        override val id: String,
         val content: String,
         val deliveryStatus: ChatMessageDeliveryStatus,
         val isMenuOpen: Boolean,
         val formattedSentTime: UiText
-    ) : MessageUi
+    ) : MessageUi(id)
 
     data class OtherUserMessage(
-        val id: String,
+        override val id: String,
         val content: String,
         val formattedSentTime: UiText,
         val sender: ChatParticipantUi
-    ) : MessageUi
+    ) : MessageUi(id)
 
     data class DateSeparator(
-        val id: String,
+        override val id: String,
         val date: UiText,
-    ) : MessageUi
+    ) : MessageUi(id)
 }

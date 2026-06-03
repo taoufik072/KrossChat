@@ -29,4 +29,6 @@
     <string name="unknown_error">Unknown error</string>
     <string name="send_a_message">Send a message</string>
     <string name="send">Send</string>
+    <string name="no_chats">No chats</string>
+    <string name="no_chats_subtitle">Create new chat to start messaging</string>
 </resources>

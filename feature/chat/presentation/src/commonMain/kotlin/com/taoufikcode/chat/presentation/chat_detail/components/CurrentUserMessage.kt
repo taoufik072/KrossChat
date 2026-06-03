@@ -33,7 +33,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CurrentUserMessage(
-    message: MessageUi.LocalUserMessage,
+    message: MessageUi.CurrentUserMessage,
     onMessageLongClick: () -> Unit,
     onDismissMessageMenu: () -> Unit,
     onDeleteClick: () -> Unit,
@@ -97,7 +97,7 @@ fun CurrentUserMessage(
 fun CurrentUserMessagePreview() {
     KrossChatTheme {
         CurrentUserMessage(
-            message = MessageUi.LocalUserMessage(
+            message = MessageUi.CurrentUserMessage(
                 id = "1",
                 content = "Hello world, this is a preview message that spans multiple lines",
                 deliveryStatus = ChatMessageDeliveryStatus.SENT,
