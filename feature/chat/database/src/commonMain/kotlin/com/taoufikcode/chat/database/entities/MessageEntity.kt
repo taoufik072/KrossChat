@@ -14,7 +14,7 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class ChatMessageEntity(
+data class MessageEntity(
     @PrimaryKey
     val messageId: String,
     val chatId: String,

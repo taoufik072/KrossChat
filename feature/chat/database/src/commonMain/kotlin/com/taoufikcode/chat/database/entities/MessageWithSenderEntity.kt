@@ -5,10 +5,10 @@ import androidx.room.Relation
 
 data class MessageWithSenderEntity(
     @Embedded
-    val message: ChatMessageEntity,
+    val message: MessageEntity,
     @Relation(
         parentColumn = "senderId",
         entityColumn = "userId"
     )
-    val sender: ChatParticipantEntity
+    val sender: ParticipantEntity
 )

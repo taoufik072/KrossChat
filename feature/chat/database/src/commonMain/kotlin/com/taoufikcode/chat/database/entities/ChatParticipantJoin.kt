@@ -13,14 +13,14 @@ import androidx.room.ForeignKey
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = ChatParticipantEntity::class,
+            entity = ParticipantEntity::class,
             parentColumns = ["userId"],
             childColumns = ["userId"],
             onDelete = ForeignKey.CASCADE
         ),
     ]
 )
-data class ChatParticipantCrossRefEntity(
+data class ChatParticipantJoin(
     val chatId: String,
     val userId: String,
     val isActive: Boolean

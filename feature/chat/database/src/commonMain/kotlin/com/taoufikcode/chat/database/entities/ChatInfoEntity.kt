@@ -3,9 +3,8 @@ package com.taoufikcode.chat.database.entities
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.taoufikcode.chat.database.view.LastMessageView
 
-data class ChatWithParticipantsEntity(
+data class ChatInfoEntity(
     @Embedded
     val chat: ChatEntity,
     @Relation(
@@ -17,7 +16,7 @@ data class ChatWithParticipantsEntity(
     @Relation(
         parentColumn = "chatId",
         entityColumn = "chatId",
-        entity = LastMessageView::class
+        entity = MessageEntity::class
     )
-    val lastMessage: LastMessageView?
+    val messagesWithSenders: List<MessageWithSenderEntity>
 )

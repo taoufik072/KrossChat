@@ -6,10 +6,10 @@ import androidx.room.DatabaseView
     viewName = "last_message_view_per_chat",
     value = """
         SELECT m1.*
-        FROM chatmessageentity m1
+        FROM messageentity m1
         JOIN (
             SELECT chatId, MAX(timestamp) AS max_timestamp
-            FROM chatmessageentity
+            FROM messageentity
             GROUP BY chatId
         ) m2 ON m1.chatId = m2.chatId AND m1.timestamp = m2.max_timestamp
     """

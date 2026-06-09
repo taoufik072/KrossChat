@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class ChatParticipantEntity(
+data class ParticipantEntity(
     @PrimaryKey
     val userId: String,
     val username: String,

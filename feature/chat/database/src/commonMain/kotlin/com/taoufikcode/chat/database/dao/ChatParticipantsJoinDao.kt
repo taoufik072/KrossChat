@@ -4,30 +4,30 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
-import com.taoufikcode.chat.database.entities.ChatParticipantCrossRefEntity
-import com.taoufikcode.chat.database.entities.ChatParticipantEntity
+import com.taoufikcode.chat.database.entities.ChatParticipantJoin
+import com.taoufikcode.chat.database.entities.ParticipantEntity
 
 @Dao
-interface ChatParticipantsCrossRefDao {
+interface ChatParticipantsJoinDao {
 
     @Upsert
-    suspend fun upsertCrossRefs(crossRefs: List<ChatParticipantCrossRefEntity>)
+    suspend fun upsertCrossRefs(crossRefs: List<ChatParticipantJoin>)
 
-    @Query("SELECT userId FROM chatparticipantcrossrefentity WHERE chatId = :chatId")
+    @Query("SELECT userId FROM chatparticipantjoin WHERE chatId = :chatId")
     suspend fun getActiveParticipantIdsByChat(chatId: String): List<String>
 
-    @Query("SELECT userId FROM chatparticipantcrossrefentity WHERE chatId = :chatId")
+    @Query("SELECT userId FROM chatparticipantjoin WHERE chatId = :chatId")
     suspend fun getAllParticipantIdsByChat(chatId: String): List<String>
 
     @Query("""
-        UPDATE chatparticipantcrossrefentity
+        UPDATE chatparticipantjoin
         SET isActive = 0
         WHERE chatId = :chatId AND userId IN (:userIds)
     """)
     suspend fun markParticipantsAsInactive(chatId: String, userIds: List<String>)
 
     @Query("""
-        UPDATE chatparticipantcrossrefentity
+        UPDATE chatparticipantjoin
         SET isActive = 1
         WHERE chatId = :chatId AND userId IN (:userIds)
     """)
@@ -36,7 +36,7 @@ interface ChatParticipantsCrossRefDao {
     @Transaction
     suspend fun syncChatParticipants(
         chatId: String,
-        participants: List<ChatParticipantEntity>
+        participants: List<ParticipantEntity>
     ) {
         if(participants.isEmpty()) {
             return
@@ -55,7 +55,7 @@ interface ChatParticipantsCrossRefDao {
 
         val completelyNewParticipantIds = serverParticipantIds - allLocalParticipantIds
         val newCrossRefs = completelyNewParticipantIds.map { userId ->
-            ChatParticipantCrossRefEntity(
+            ChatParticipantJoin(
                 chatId = chatId,
                 userId = userId,
                 isActive = true

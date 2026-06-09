@@ -4,21 +4,21 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.taoufikcode.chat.database.dao.ChatDao
-import com.taoufikcode.chat.database.dao.ChatMessageDao
-import com.taoufikcode.chat.database.dao.ChatParticipantDao
-import com.taoufikcode.chat.database.dao.ChatParticipantsCrossRefDao
+import com.taoufikcode.chat.database.dao.MessageDao
+import com.taoufikcode.chat.database.dao.ParticipantDao
+import com.taoufikcode.chat.database.dao.ChatParticipantsJoinDao
 import com.taoufikcode.chat.database.entities.ChatEntity
-import com.taoufikcode.chat.database.entities.ChatMessageEntity
-import com.taoufikcode.chat.database.entities.ChatParticipantCrossRefEntity
-import com.taoufikcode.chat.database.entities.ChatParticipantEntity
+import com.taoufikcode.chat.database.entities.MessageEntity
+import com.taoufikcode.chat.database.entities.ChatParticipantJoin
+import com.taoufikcode.chat.database.entities.ParticipantEntity
 import com.taoufikcode.chat.database.view.LastMessageView
 
 @Database(
     entities = [
         ChatEntity::class,
-        ChatParticipantEntity::class,
-        ChatMessageEntity::class,
-        ChatParticipantCrossRefEntity::class,
+        ParticipantEntity::class,
+        MessageEntity::class,
+        ChatParticipantJoin::class,
     ],
     views = [
         LastMessageView::class
@@ -28,9 +28,9 @@ import com.taoufikcode.chat.database.view.LastMessageView
 @ConstructedBy(KrossChatDatabaseConstructor::class)
 abstract class KrossChatDatabase: RoomDatabase() {
     abstract val chatDao: ChatDao
-    abstract val chatParticipantDao: ChatParticipantDao
-    abstract val chatMessageDao: ChatMessageDao
-    abstract val chatParticipantsCrossRefDao: ChatParticipantsCrossRefDao
+    abstract val participantDao: ParticipantDao
+    abstract val messageDao: MessageDao
+    abstract val chatParticipantsJoinDao: ChatParticipantsJoinDao
 
     companion object {
         const val DB_NAME = "kross.db"
