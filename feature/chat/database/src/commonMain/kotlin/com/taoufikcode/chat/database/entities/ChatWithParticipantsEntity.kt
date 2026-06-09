@@ -5,13 +5,13 @@ import androidx.room.Junction
 import androidx.room.Relation
 import com.taoufikcode.chat.database.view.LastMessageView
 
-data class ChatWithParticipants(
+data class ChatWithParticipantsEntity(
     @Embedded
     val chat: ChatEntity,
     @Relation(
         parentColumn = "chatId",
         entityColumn = "userId",
-        associateBy = Junction(ChatParticipantCrossRef::class)
+        associateBy = Junction(ChatParticipantCrossRefEntity::class)
     )
     val participants: List<ChatParticipantEntity>,
     @Relation(
@@ -28,7 +28,7 @@ data class ChatInfoEntity(
     @Relation(
         parentColumn = "chatId",
         entityColumn = "userId",
-        associateBy = Junction(ChatParticipantCrossRef::class)
+        associateBy = Junction(ChatParticipantCrossRefEntity::class)
     )
     val participants: List<ChatParticipantEntity>,
     @Relation(
@@ -36,5 +36,5 @@ data class ChatInfoEntity(
         entityColumn = "chatId",
         entity = ChatMessageEntity::class
     )
-    val messagesWithSenders: List<MessageWithSender>
+    val messagesWithSenders: List<MessageWithSenderEntity>
 )

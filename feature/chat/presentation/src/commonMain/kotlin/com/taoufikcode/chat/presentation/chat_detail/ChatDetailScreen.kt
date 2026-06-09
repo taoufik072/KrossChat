@@ -151,15 +151,20 @@ fun ChatDetailScreen(
                     AnimatedVisibility(
                         visible = !configuration.isWideScreen && state.chatUi != null
                     ) {
-                        MessageBox(
-                            messageTextFieldState = state.messageTextFieldState,
-                            isTextInputEnabled = state.canSendMessage,
-                            connectionState = state.connectionState,
-                            onSendClick = {
-                                onAction(ChatDetailAction.OnSendMessageClick)
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                        DynamicRoundedCornerColumn(
+                            isCornersRounded = configuration.isWideScreen
+                        ) {
+                            MessageBox(
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(8.dp),
+                                messageTextFieldState = state.messageTextFieldState,
+                                isTextInputEnabled = state.canSendMessage,
+                                connectionState = state.connectionState,
+                                onSendClick = {
+                                    onAction(ChatDetailAction.OnSendMessageClick)
+                                }
+                            )
+                        }
                     }
                 }
 
@@ -247,7 +252,8 @@ private fun ChatDetailMessagesPreview() {
                         chatId = "1",
                         content = "lorem ipsum dolor sit amet consectetur adipiscing elit sed" + " do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                         createdAt = Clock.System.now(),
-                        senderId = "1"
+                        senderId = "1",
+                        deliveryStatus = ChatMessageDeliveryStatus.SENT
                     ), lastMessageSenderUsername = "Taoufik"
                 ),
                 messages = (1..20).map {

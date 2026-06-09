@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.taoufikcode.chat.domain.models.ChatMessage
+import com.taoufikcode.chat.domain.models.ChatMessageDeliveryStatus
 import com.taoufikcode.chat.presentation.components.ChatItemHeaderRow
 import com.taoufikcode.chat.presentation.model.ChatUi
 import com.taoufikcode.core.designsystem.components.avatar.ChatParticipantUi
@@ -128,7 +129,8 @@ fun ChatListItemUiPreview() {
                     content = "Lorem Ipsum is simply dummy text of the printing and typesetting industry." +
                             " Lorem Ipsum has been the industry's standard dummy text ever since 1966",
                     createdAt = Clock.System.now(),
-                    senderId = "1"
+                    senderId = "1",
+                    deliveryStatus = ChatMessageDeliveryStatus.SENT
                 ),
                 lastMessageSenderUsername = "Taoufik"
             )

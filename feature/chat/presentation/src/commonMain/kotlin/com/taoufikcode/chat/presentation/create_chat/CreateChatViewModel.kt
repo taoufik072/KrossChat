@@ -4,7 +4,7 @@ import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.taoufikcode.chat.domain.ChatService
+import com.taoufikcode.chat.domain.ChatRepository
 import com.taoufikcode.chat.presentation.mappers.toUi
 import com.taoufikcode.core.domain.util.DataError
 import com.taoufikcode.core.domain.util.onFailure
@@ -29,7 +29,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @OptIn(FlowPreview::class)
 class CreateChatViewModel(
-    private val chatService: ChatService
+    private val chatRepository: ChatRepository
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -79,7 +79,7 @@ class CreateChatViewModel(
                 )
             }
 
-            chatService
+            chatRepository
                 .createChat(userIds)
                 .onSuccess { chat ->
                     _state.update {
@@ -139,7 +139,7 @@ class CreateChatViewModel(
                 )
             }
 
-            chatService
+            chatRepository
                 .searchParticipant(query)
                 .onSuccess { participant ->
                     _state.update {

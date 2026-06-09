@@ -1,5 +1,6 @@
 package com.taoufikcode.chat.presentation.di
 
+import com.taoufikcode.chat.presentation.chat_detail.ChatDetailViewModel
 import com.taoufikcode.chat.presentation.chat_list.ChatListViewModel
 import com.taoufikcode.chat.presentation.chat_list_detail.ChatListDetailViewModel
 import com.taoufikcode.chat.presentation.create_chat.CreateChatViewModel
@@ -10,5 +11,7 @@ val chatPresentationModule = module {
     singleOf(::ChatListDetailViewModel)
     singleOf(::CreateChatViewModel)
     singleOf(::ChatListViewModel)
+    singleOf(::ChatDetailViewModel)
+
 
 }

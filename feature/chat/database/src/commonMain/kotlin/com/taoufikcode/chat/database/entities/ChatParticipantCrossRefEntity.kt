@@ -20,7 +20,7 @@ import androidx.room.ForeignKey
         ),
     ]
 )
-data class ChatParticipantCrossRef(
+data class ChatParticipantCrossRefEntity(
     val chatId: String,
     val userId: String,
     val isActive: Boolean

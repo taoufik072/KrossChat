@@ -9,7 +9,7 @@ import com.taoufikcode.chat.database.dao.ChatParticipantDao
 import com.taoufikcode.chat.database.dao.ChatParticipantsCrossRefDao
 import com.taoufikcode.chat.database.entities.ChatEntity
 import com.taoufikcode.chat.database.entities.ChatMessageEntity
-import com.taoufikcode.chat.database.entities.ChatParticipantCrossRef
+import com.taoufikcode.chat.database.entities.ChatParticipantCrossRefEntity
 import com.taoufikcode.chat.database.entities.ChatParticipantEntity
 import com.taoufikcode.chat.database.view.LastMessageView
 
@@ -18,7 +18,7 @@ import com.taoufikcode.chat.database.view.LastMessageView
         ChatEntity::class,
         ChatParticipantEntity::class,
         ChatMessageEntity::class,
-        ChatParticipantCrossRef::class,
+        ChatParticipantCrossRefEntity::class,
     ],
     views = [
         LastMessageView::class

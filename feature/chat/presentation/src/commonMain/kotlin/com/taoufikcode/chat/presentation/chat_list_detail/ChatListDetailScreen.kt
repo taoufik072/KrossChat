@@ -88,20 +88,18 @@ fun ChatListDetailScreen(
         },
         detailPane = {
             AnimatedPane {
-                AnimatedPane {
-                    val listPane = scaffoldNavigator.scaffoldValue[ListDetailPaneScaffoldRole.List]
-                    ChatDetailRoot(
-                        chatId = state.selectedChatId,
-                        isDetailPresent = detailPane == PaneAdaptedValue.Expanded && listPane == PaneAdaptedValue.Expanded,
-                        onBack = {
-                            scope.launch {
-                                if (scaffoldNavigator.canNavigateBack()) {
-                                    scaffoldNavigator.navigateBack()
-                                }
+                val listPane = scaffoldNavigator.scaffoldValue[ListDetailPaneScaffoldRole.List]
+                ChatDetailRoot(
+                    chatId = state.selectedChatId,
+                    isDetailPresent = detailPane == PaneAdaptedValue.Expanded && listPane == PaneAdaptedValue.Expanded,
+                    onBack = {
+                        scope.launch {
+                            if (scaffoldNavigator.canNavigateBack()) {
+                                scaffoldNavigator.navigateBack()
                             }
                         }
-                    )
-                }
+                    }
+                )
             }
             DialogSheetScopedViewModel(
                 visible = state.dialogState is DialogState.CreateChat

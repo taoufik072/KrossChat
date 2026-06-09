@@ -1,0 +1,96 @@
+package com.taoufikcode.chat.data.repository
+
+import com.taoufikcode.chat.data.mappers.toDomain
+import com.taoufikcode.chat.data.mappers.toEntity
+import com.taoufikcode.chat.data.mappers.toLastMessageView
+import com.taoufikcode.chat.data.remote.ChatRemoteDataSource
+import com.taoufikcode.chat.database.KrossChatDatabase
+import com.taoufikcode.chat.database.entities.ChatWithParticipantsEntity
+import com.taoufikcode.chat.domain.ChatRepository
+import com.taoufikcode.chat.domain.models.Chat
+import com.taoufikcode.chat.domain.models.ChatInfo
+import com.taoufikcode.chat.domain.models.ChatParticipant
+import com.taoufikcode.core.domain.util.DataError
+import com.taoufikcode.core.domain.util.EmptyResult
+import com.taoufikcode.core.domain.util.Result
+import com.taoufikcode.core.domain.util.asEmptyResult
+import com.taoufikcode.core.domain.util.map
+import com.taoufikcode.core.domain.util.onSuccess
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
+
+class ChatRepositoryImpl(
+    private val chatRemoteDataSource: ChatRemoteDataSource,
+    private val chatLocalDataBase: KrossChatDatabase
+) : ChatRepository {
+    override suspend fun searchParticipant(query: String): Result<ChatParticipant, DataError.Remote> {
+        return chatRemoteDataSource.searchParticipant(query).map { it.toDomain() }
+    }
+
+    override suspend fun createChat(otherUserIds: List<String>): Result<Chat, DataError.Remote> {
+        return chatRemoteDataSource.createChat(otherUserIds).map { it.toDomain() }
+            .onSuccess { chat ->
+                chatLocalDataBase.chatDao.upsertChatWithParticipantsAndCrossRefs(
+                    chat = chat.toEntity(),
+                    participants = chat.participants.map { it.toEntity() },
+                    participantDao = chatLocalDataBase.chatParticipantDao,
+                    crossRefDao = chatLocalDataBase.chatParticipantsCrossRefDao
+                )
+            }
+    }
+
+
+    override suspend fun getChats(): Result<List<Chat>, DataError.Remote> {
+        return chatRemoteDataSource.getChats().map { chatDto ->
+            chatDto.map { it.toDomain() }
+        }
+    }
+
+    override fun observeChats(): Flow<List<Chat>> {
+        return chatLocalDataBase.chatDao.getChatsWithActiveParticipants()
+            .map { chatWithParticipantsList ->
+                chatWithParticipantsList.map { it.toDomain() }
+            }
+    }
+
+    override fun observeChatById(chatId: String): Flow<ChatInfo> {
+        return chatLocalDataBase.chatDao.getChatInfoById(chatId)
+            .filterNotNull()
+            .map { it.toDomain() }
+    }
+
+    override suspend fun fetchChats(): Result<List<Chat>, DataError.Remote> {
+        return chatRemoteDataSource.getChats().map { chatDto -> chatDto.map { it.toDomain() } }
+            .onSuccess { chats ->
+                val chatsWithParticipants = chats.map { chat ->
+                    ChatWithParticipantsEntity(
+                        chat = chat.toEntity(),
+                        participants = chat.participants.map { it.toEntity() },
+                        lastMessage = chat.lastMessage?.toLastMessageView()
+                    )
+                }
+
+                chatLocalDataBase.chatDao.upsertChatsWithParticipantsAndCrossRefs(
+                    chats = chatsWithParticipants,
+                    participantDao = chatLocalDataBase.chatParticipantDao,
+                    crossRefDao = chatLocalDataBase.chatParticipantsCrossRefDao,
+                    messageDao = chatLocalDataBase.chatMessageDao
+                )
+            }
+    }
+
+    override suspend fun getChatById(chatId: String): EmptyResult<DataError.Remote> {
+        return chatRemoteDataSource.getChatById(chatId).map { it.toDomain() }
+            .onSuccess { chat ->
+                chatLocalDataBase.chatDao.upsertChatWithParticipantsAndCrossRefs(
+                    chat = chat.toEntity(),
+                    participants = chat.participants.map { it.toEntity() },
+                    participantDao = chatLocalDataBase.chatParticipantDao,
+                    crossRefDao = chatLocalDataBase.chatParticipantsCrossRefDao
+                )
+            }
+            .asEmptyResult()
+    }
+
+}

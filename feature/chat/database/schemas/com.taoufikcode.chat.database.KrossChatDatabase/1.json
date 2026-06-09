@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6300841d3616eb32ad781f4582c3d2af",
+    "identityHash": "e82c8fc810c7af9e3a7b014cbdc66720",
     "entities": [
       {
         "tableName": "ChatEntity",
@@ -125,7 +125,7 @@
         ]
       },
       {
-        "tableName": "ChatParticipantCrossRef",
+        "tableName": "ChatParticipantCrossRefEntity",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`chatId` TEXT NOT NULL, `userId` TEXT NOT NULL, `isActive` INTEGER NOT NULL, PRIMARY KEY(`chatId`, `userId`), FOREIGN KEY(`chatId`) REFERENCES `ChatEntity`(`chatId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`userId`) REFERENCES `ChatParticipantEntity`(`userId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
@@ -188,7 +188,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6300841d3616eb32ad781f4582c3d2af')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e82c8fc810c7af9e3a7b014cbdc66720')"
     ]
   }
 }

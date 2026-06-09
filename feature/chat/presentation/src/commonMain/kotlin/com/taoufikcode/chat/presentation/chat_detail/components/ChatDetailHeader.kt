@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.taoufikcode.chat.domain.models.ChatMessage
+import com.taoufikcode.chat.domain.models.ChatMessageDeliveryStatus
 import com.taoufikcode.chat.presentation.components.ChatHeader
 import com.taoufikcode.chat.presentation.components.ChatItemHeaderRow
 import com.taoufikcode.chat.presentation.model.ChatUi
@@ -157,7 +158,8 @@ fun ChatDetailHeaderPreview() {
                             content = "lorem ipsum dolor sit amet consectetur adipiscing elit sed" +
                                     "do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                             createdAt = Clock.System.now(),
-                            senderId = "1"
+                            senderId = "1",
+                            deliveryStatus = ChatMessageDeliveryStatus.SENT
                         ),
                         lastMessageSenderUsername = "Taoufik"
                     ),
@@ -210,7 +212,8 @@ fun ChatDetailHeaderGroupPreview() {
                             content = "This is a last chat message that was sent by Taoufik " +
                                     "and goes over multiple lines to showcase the ellipsis",
                             createdAt = Clock.System.now(),
-                            senderId = "1"
+                            senderId = "1",
+                            deliveryStatus = ChatMessageDeliveryStatus.SENT
                         ),
                         lastMessageSenderUsername = "Taoufik"
                     ),
