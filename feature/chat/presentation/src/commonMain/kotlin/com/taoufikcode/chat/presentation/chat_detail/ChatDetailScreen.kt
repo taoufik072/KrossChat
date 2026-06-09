@@ -17,9 +17,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -39,6 +42,7 @@ import com.taoufikcode.chat.presentation.model.MessageUi
 import com.taoufikcode.core.designsystem.components.avatar.ChatParticipantUi
 import com.taoufikcode.core.designsystem.theme.KrossChatTheme
 import com.taoufikcode.core.designsystem.theme.extended
+import com.taoufikcode.core.presentation.utils.ObserveAsEvents
 import com.taoufikcode.core.presentation.utils.UiText
 import com.taoufikcode.core.presentation.utils.clearFocusOnTap
 import com.taoufikcode.core.presentation.utils.currentDeviceConfiguration
@@ -57,7 +61,15 @@ fun ChatDetailRoot(
     viewModel: ChatDetailViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-
+    val snackbarState = remember { SnackbarHostState() }
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            ChatDetailEvent.OnChatLeft -> onBack()
+            is ChatDetailEvent.OnError -> {
+                snackbarState.showSnackbar(event.error.asStringAsync())
+            }
+        }
+    }
     LaunchedEffect(chatId) {
         viewModel.onAction(ChatDetailAction.OnSelectChat(chatId))
     }
@@ -70,7 +82,10 @@ fun ChatDetailRoot(
     }
 
     ChatDetailScreen(
-        state = state, isDetailPresent = isDetailPresent, onAction = viewModel::onAction
+        state = state,
+        isDetailPresent = isDetailPresent,
+        snackBarState = snackbarState,
+        onAction = viewModel::onAction
     )
 }
 
@@ -78,6 +93,7 @@ fun ChatDetailRoot(
 fun ChatDetailScreen(
     state: ChatDetailState,
     isDetailPresent: Boolean,
+    snackBarState: SnackbarHostState,
     onAction: (ChatDetailAction) -> Unit,
 ) {
     val configuration = currentDeviceConfiguration()
@@ -90,6 +106,9 @@ fun ChatDetailScreen(
             MaterialTheme.colorScheme.surface
         } else {
             MaterialTheme.colorScheme.extended.surfaceLower
+        },
+        snackbarHost = {
+            SnackbarHost(snackBarState)
         }
     ) { innerPadding ->
         Box(
@@ -214,7 +233,10 @@ private fun DynamicRoundedCornerColumn(
 private fun ChatDetailEmptyPreview() {
     KrossChatTheme {
         ChatDetailScreen(
-            state = ChatDetailState(), isDetailPresent = false, onAction = {})
+            state = ChatDetailState(),
+            isDetailPresent = false,
+            snackBarState = remember { SnackbarHostState() },
+            onAction = {})
     }
 }
 
@@ -277,6 +299,7 @@ private fun ChatDetailMessagesPreview() {
                     }
                 }),
             isDetailPresent = true,
+            snackBarState = remember { SnackbarHostState() },
             onAction = {}
         )
     }
