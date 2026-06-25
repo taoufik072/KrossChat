@@ -1,14 +1,13 @@
 package com.taoufikcode.chat.data.repository
 
+import com.taoufikcode.chat.data.services.ChatSyncData
 import com.taoufikcode.chat.data.mappers.toDomain
 import com.taoufikcode.chat.data.mappers.toEntity
 import com.taoufikcode.chat.data.mappers.toLastMessageView
-import com.taoufikcode.chat.data.remote.ChatRemoteDataSource
+import com.taoufikcode.chat.data.services.ChatRemoteDataSource
 import com.taoufikcode.chat.database.KrossChatDatabase
-import com.taoufikcode.chat.database.entities.ChatInfoEntity
 import com.taoufikcode.chat.database.entities.ChatWithParticipantsEntity
-import com.taoufikcode.chat.database.entities.ParticipantEntity
-import com.taoufikcode.chat.domain.ChatRepository
+import com.taoufikcode.chat.domain.repository.ChatRepository
 import com.taoufikcode.chat.domain.models.Chat
 import com.taoufikcode.chat.domain.models.ChatInfo
 import com.taoufikcode.chat.domain.models.ChatParticipant
@@ -18,16 +17,13 @@ import com.taoufikcode.core.domain.util.Result
 import com.taoufikcode.core.domain.util.asEmptyResult
 import com.taoufikcode.core.domain.util.map
 import com.taoufikcode.core.domain.util.onSuccess
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.supervisorScope
 
 class ChatRepositoryImpl(
     private val chatRemoteDataSource: ChatRemoteDataSource,
+    private val chatSyncDataSource: ChatSyncData,
     private val chatLocalDataBase: KrossChatDatabase,
 ) : ChatRepository {
 
@@ -37,14 +33,7 @@ class ChatRepositoryImpl(
 
     override suspend fun createChat(otherUserIds: List<String>): Result<Chat, DataError.Remote> {
         return chatRemoteDataSource.createChat(otherUserIds).map { it.toDomain() }
-            .onSuccess { chat ->
-                chatLocalDataBase.chatDao.upsertChatWithParticipantsAndCrossRefs(
-                    chat = chat.toEntity(),
-                    participants = chat.participants.map { it.toEntity() },
-                    participantDao = chatLocalDataBase.participantDao,
-                    crossRefDao = chatLocalDataBase.chatParticipantsJoinDao
-                )
-            }
+            .onSuccess { chat -> cacheChat(chat) }
     }
 
 
@@ -57,21 +46,17 @@ class ChatRepositoryImpl(
     override fun observeChats(): Flow<List<Chat>> {
         return chatLocalDataBase.chatDao.getChatsWithParticipants()
             .map { allChatsWithParticipants ->
-                supervisorScope {
-                    allChatsWithParticipants
-                        .map { chatWithParticipants ->
-                            async {
-                                ChatWithParticipantsEntity(
-                                    chat = chatWithParticipants.chat,
-                                    participants = chatWithParticipants
-                                        .participants
-                                        .onlyActive(chatWithParticipants.chat.chatId),
-                                    lastMessage = chatWithParticipants.lastMessage
-                                )
-                            }
+                val activeParticipantIdsByChat = chatLocalDataBase
+                    .chatParticipantsJoinDao
+                    .getActiveParticipantRefs()
+                    .groupBy({ it.chatId }, { it.userId })
+
+                allChatsWithParticipants.map { chatWithParticipants ->
+                    chatWithParticipants.copy(
+                        participants = chatWithParticipants.participants.filter {
+                            it.userId in activeParticipantIdsByChat[chatWithParticipants.chat.chatId].orEmpty()
                         }
-                        .awaitAll()
-                        .map { it.toDomain() }
+                    ).toDomain()
                 }
             }
     }
@@ -80,15 +65,14 @@ class ChatRepositoryImpl(
         return chatLocalDataBase.chatDao.getChatInfoById(chatId)
             .filterNotNull()
             .map { chatInfo ->
-                ChatInfoEntity(
-                    chat = chatInfo.chat,
-                    participants = chatInfo
-                        .participants
-                        .onlyActive(chatInfo.chat.chatId),
-                    messagesWithSenders = chatInfo.messagesWithSenders
-                )
+                val activeParticipantIds = chatLocalDataBase
+                    .chatParticipantsJoinDao
+                    .getActiveParticipantUserIds(chatId)
+
+                chatInfo.copy(
+                    participants = chatInfo.participants.filter { it.userId in activeParticipantIds }
+                ).toDomain()
             }
-            .map { it.toDomain() }
     }
 
     override fun observeActiveParticipantsByChatId(chatId: String): Flow<List<ChatParticipant>> {
@@ -119,16 +103,7 @@ class ChatRepositoryImpl(
     }
 
     override suspend fun getChatById(chatId: String): EmptyResult<DataError.Remote> {
-        return chatRemoteDataSource.getChatById(chatId).map { it.toDomain() }
-            .onSuccess { chat ->
-                chatLocalDataBase.chatDao.upsertChatWithParticipantsAndCrossRefs(
-                    chat = chat.toEntity(),
-                    participants = chat.participants.map { it.toEntity() },
-                    participantDao = chatLocalDataBase.participantDao,
-                    crossRefDao = chatLocalDataBase.chatParticipantsJoinDao
-                )
-            }
-            .asEmptyResult()
+        return chatRemoteDataSource.getChatById(chatId).asEmptyResult()
     }
 
     override suspend fun leaveChat(chatId: String): EmptyResult<DataError.Remote> {
@@ -146,24 +121,16 @@ class ChatRepositoryImpl(
         return chatRemoteDataSource
             .addParticipantsToChat(chatId, userIds)
             .map { it.toDomain() }
-            .onSuccess { chat ->
-                chatLocalDataBase.chatDao.upsertChatWithParticipantsAndCrossRefs(
-                    chat = chat.toEntity(),
-                    participants = chat.participants.map { it.toEntity() },
-                    participantDao = chatLocalDataBase.participantDao,
-                    crossRefDao = chatLocalDataBase.chatParticipantsJoinDao
-                )
-            }
+            .onSuccess { chat -> cacheChat(chat) }
     }
 
-    private suspend fun List<ParticipantEntity>.onlyActive(chatId: String): List<ParticipantEntity> {
-        val activeParticipantIds = chatLocalDataBase
-            .chatDao
-            .getActiveParticipantsByChatId(chatId)
-            .first()
-            .map { it.userId }
-
-        return this.filter { it.userId in activeParticipantIds }
+    private suspend fun cacheChat(chat: Chat) {
+        chatLocalDataBase.chatDao.upsertChatWithParticipantsAndCrossRefs(
+            chat = chat.toEntity(),
+            participants = chat.participants.map { it.toEntity() },
+            participantDao = chatLocalDataBase.participantDao,
+            crossRefDao = chatLocalDataBase.chatParticipantsJoinDao
+        )
     }
 
 }

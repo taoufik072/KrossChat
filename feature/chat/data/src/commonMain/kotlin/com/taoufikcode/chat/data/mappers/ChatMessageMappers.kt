@@ -7,6 +7,8 @@ import com.taoufikcode.chat.database.entities.MessageEntity
 import com.taoufikcode.chat.database.view.LastMessageView
 import com.taoufikcode.chat.domain.models.ChatMessage
 import com.taoufikcode.chat.domain.models.ChatMessageDeliveryStatus
+import com.taoufikcode.chat.domain.models.OutgoingNewMessage
+import kotlin.time.Clock
 import kotlin.time.Instant
 
 fun ChatMessageDto.toDomain(): ChatMessage {
@@ -30,7 +32,19 @@ fun LastMessageView.toDomain(): ChatMessage {
         deliveryStatus = ChatMessageDeliveryStatus.valueOf(this.deliveryStatus)
     )
 }
-
+fun OutgoingWebSocketDto.NewMessage.toEntity(
+    senderId: String,
+    deliveryStatus: ChatMessageDeliveryStatus
+): MessageEntity {
+    return MessageEntity(
+        messageId = messageId,
+        chatId = chatId,
+        content = content,
+        senderId = senderId,
+        deliveryStatus = deliveryStatus.name,
+        timestamp = Clock.System.now().toEpochMilliseconds()
+    )
+}
 fun ChatMessage.toEntity(): MessageEntity {
     return MessageEntity(
         messageId = id,
@@ -60,6 +74,13 @@ fun ChatMessage.toNewMessage(): OutgoingWebSocketDto.NewMessage {
     )
 }
 
+fun OutgoingNewMessage.toWebSocketDto(): OutgoingWebSocketDto.NewMessage {
+    return OutgoingWebSocketDto.NewMessage(
+        chatId = chatId,
+        messageId = messageId,
+        content = content
+    )
+}
 
 fun IncomingWebSocketDto.NewMessageDto.toEntity(): MessageEntity {
     return MessageEntity(

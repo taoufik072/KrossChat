@@ -3,13 +3,13 @@
 package com.taoufikcode.chat.data.network
 
 import com.taoufikcode.chat.data.dto.websocket.WebSocketMessageDto
-import com.taoufikcode.chat.domain.error.ConnectionError
 import com.taoufikcode.chat.domain.models.ConnectionState
 import com.taoufikcode.core.data.lifecycle.AppLifecycleObserver
 import com.taoufikcode.core.data.network.ConnectivityObserver
 import com.taoufikcode.core.data.network.UrlConstants
 import com.taoufikcode.core.domain.auth.SessionStorage
 import com.taoufikcode.core.domain.logging.KrossChatLogger
+import com.taoufikcode.core.domain.util.DataError
 import com.taoufikcode.core.domain.util.EmptyResult
 import com.taoufikcode.core.domain.util.Result
 import com.taoufikcode.feature.chat.data.BuildKonfig
@@ -159,10 +159,8 @@ class KtorWebSocketConnector(
 
                     shouldRetry
                 }
-                // Catch block for non-retriable errors
                 .catch { e ->
                     logger.e(TAG, e) { "Unhandled WebSocket error" }
-
                     _connectionState.value = connectionErrorHandler.getConnectionStateForError(e)
                 }
         }
@@ -171,55 +169,54 @@ class KtorWebSocketConnector(
     private fun createWebSocketFlow(accessToken: String) = callbackFlow {
         _connectionState.value = ConnectionState.CONNECTING
 
-        val session = httpClient.webSocketSession(
+        currentSession = httpClient.webSocketSession(
             urlString = "${UrlConstants.BASE_URL_WS}/chat"
         ) {
             header("Authorization", "Bearer $accessToken")
             header("X-API-Key", BuildKonfig.API_KEY)
         }
-        currentSession = session
-        _connectionState.value = ConnectionState.CONNECTED
+        currentSession?.let { session ->
+            _connectionState.value = ConnectionState.CONNECTED
 
-        session
-            .incoming
-            .consumeAsFlow()
-            .buffer(
-                capacity = 100
-            )
-            .collect { frame ->
-                when (frame) {
-                    is Frame.Text -> {
-                        val text = frame.readText()
-                        logger.i(TAG) { "Received text frame: $text" }
+            session
+                .incoming
+                .consumeAsFlow()
+                .buffer(capacity = 100)
+                .collect { frame ->
+                    when (frame) {
+                        is Frame.Text -> {
+                            val text = frame.readText()
+                            logger.i(TAG) { "Received text frame: $text" }
 
-                        val messageDto = json.decodeFromString<WebSocketMessageDto>(text)
-                        send(messageDto)
+                            val messageDto = json.decodeFromString<WebSocketMessageDto>(text)
+                            send(messageDto)
+                        }
+
+                        is Frame.Ping -> {
+                            logger.d(TAG) { "Sending pong after receiving ping" }
+                            session.send(Frame.Pong(frame.data))
+                        }
+
+                        else -> Unit
                     }
-
-                    is Frame.Ping -> {
-                        logger.d(TAG) { "Sending pong after receiving ping" }
-                        session.send(Frame.Pong(frame.data))
-                    }
-
-                    else -> Unit
                 }
-            }
 
-        awaitClose {
-            logger.i(TAG) { "Disconnecting from WebSocket session..." }
-            session.cancel()
-            if (currentSession === session) {
-                currentSession = null
-                _connectionState.value = ConnectionState.DISCONNECTED
+            awaitClose {
+                logger.i(TAG) { "Disconnecting from WebSocket session..." }
+                session.cancel()
+                if (currentSession === session) {
+                    currentSession = null
+                    _connectionState.value = ConnectionState.DISCONNECTED
+                }
             }
         }
     }
 
-    suspend fun sendMessage(message: String): EmptyResult<ConnectionError> {
+    suspend fun sendMessage(message: String): EmptyResult<DataError.Connection> {
         val connectionState = connectionState.value
 
         if (currentSession == null || connectionState != ConnectionState.CONNECTED) {
-            return Result.Failure(ConnectionError.NOT_CONNECTED)
+            return Result.Failure(DataError.Connection.NOT_CONNECTED)
         }
 
         return try {
@@ -228,7 +225,7 @@ class KtorWebSocketConnector(
         } catch (e: Exception) {
             currentCoroutineContext().ensureActive()
             logger.e(TAG, e) { "Unable to send WebSocket message" }
-            Result.Failure(ConnectionError.MESSAGE_SEND_FAILED)
+            Result.Failure(DataError.Connection.MESSAGE_SEND_FAILED)
         }
     }
 }
