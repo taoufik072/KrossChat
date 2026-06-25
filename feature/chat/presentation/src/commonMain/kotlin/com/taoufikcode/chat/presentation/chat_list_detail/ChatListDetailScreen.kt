@@ -60,7 +60,7 @@ fun ChatListDetailScreen(
     val detailPane = scaffoldNavigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail]
     LaunchedEffect(detailPane, state.selectedChatId) {
         if (detailPane == PaneAdaptedValue.Hidden && state.selectedChatId != null) {
-            onAction(ChatListDetailAction.OnChatClick(null))
+            onAction(ChatListDetailAction.OnSelectChat(null))
         }
     }
 
@@ -71,8 +71,9 @@ fun ChatListDetailScreen(
         listPane = {
             AnimatedPane {
                 ChatListRoot(
+                    selectedChatId = state.selectedChatId,
                     onChatClick = {
-                        onAction(ChatListDetailAction.OnChatClick(it.id))
+                        onAction(ChatListDetailAction.OnSelectChat(it))
                         scope.launch {
                             scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                         }
@@ -81,6 +82,7 @@ fun ChatListDetailScreen(
                     onCreateChatClick = {
                         onAction(ChatListDetailAction.OnCreateChatClick)
                     },
+
                     onProfileSettingsClick = {
                         onAction(ChatListDetailAction.OnProfileSettingsClick)
                     },
@@ -112,7 +114,7 @@ fun ChatListDetailScreen(
         CreateChatRoot(
             onChatCreated = { chat ->
                 onAction(ChatListDetailAction.OnDismissCurrentDialog)
-                onAction(ChatListDetailAction.OnChatClick(chat.id))
+                onAction(ChatListDetailAction.OnSelectChat(chat.id))
                 scope.launch {
                     scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                 }
