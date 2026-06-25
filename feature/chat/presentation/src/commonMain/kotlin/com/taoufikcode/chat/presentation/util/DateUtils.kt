@@ -13,6 +13,7 @@ import krosschat.feature.chat.presentation.generated.resources.yesterday
 import kotlin.time.Clock
 import kotlin.time.Instant
 
+
 object DateUtils {
 
     fun formatMessageTime(instant: Instant, clock: Clock = Clock.System): UiText {
@@ -21,6 +22,14 @@ object DateUtils {
         val todayDate = clock.now().toLocalDateTime(timeZone).date
         val yesterdayDate = todayDate.minus(1, DateTimeUnit.DAY)
 
+        val formattedTime = messageDateTime.format(
+            format = LocalDateTime.Format {
+                amPmHour()
+                char(':')
+                minute()
+                amPmMarker("am", "pm")
+            }
+        )
         val formattedDateTime = messageDateTime.format(
             LocalDateTime.Format {
                 day()
@@ -28,17 +37,13 @@ object DateUtils {
                 monthNumber()
                 char('/')
                 year()
-                char(' ')
-                amPmHour()
-                char(':')
-                minute()
-                amPmMarker("am", "pm")
+                chars(", $formattedTime")
             }
         )
 
         return when(messageDateTime.date) {
-            todayDate -> UiText.Resource(Res.string.today)
-            yesterdayDate -> UiText.Resource(Res.string.yesterday)
+            todayDate -> UiText.Resource(Res.string.today, arrayOf(formattedTime))
+            yesterdayDate -> UiText.Resource(Res.string.yesterday, arrayOf(formattedTime))
             else -> UiText.DynamicString(formattedDateTime)
         }
     }
