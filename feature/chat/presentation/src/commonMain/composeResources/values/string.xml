@@ -36,4 +36,6 @@
     <string name="select_a_chat">Select a chat to start chatting!</string>
     <string name="today">Today, %1$s</string>
     <string name="yesterday">Yesterday, %1$s</string>
+    <string name="today_x">Today, %1$s</string>
+    <string name="yesterday_x">Yesterday, %1$s</string>
 </resources>

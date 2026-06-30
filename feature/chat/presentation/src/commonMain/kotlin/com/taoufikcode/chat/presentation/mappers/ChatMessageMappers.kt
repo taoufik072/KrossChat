@@ -3,7 +3,21 @@ package com.taoufikcode.chat.presentation.mappers
 import com.taoufikcode.chat.domain.models.MessageWithSender
 import com.taoufikcode.chat.presentation.model.MessageUi
 import com.taoufikcode.chat.presentation.util.DateUtils
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
+fun List<MessageWithSender>.toUiList(localUserId: String): List<MessageUi> {
+    return this
+        .sortedByDescending { it.message.createdAt }
+        .groupBy {
+            it.message.createdAt.toLocalDateTime(TimeZone.currentSystemDefault()).date
+        }
+        .flatMap { (date, messages) ->
+            messages.map { it.toUi(localUserId) } + MessageUi.DateSeparator(
+                id = date.toString(),
+                date = DateUtils.formatDateSeparator(date)
+            )
+        }}
 fun MessageWithSender.toUi(
     localUserId: String,
 ): MessageUi {
