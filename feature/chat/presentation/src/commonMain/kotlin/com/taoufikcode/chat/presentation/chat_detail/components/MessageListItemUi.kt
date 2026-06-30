@@ -24,6 +24,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun MessageListItemUi(
     messageUi: MessageUi,
+    messageWithOpenMenu: MessageUi.CurrentUserMessage?,
     onMessageLongClick: (MessageUi.CurrentUserMessage) -> Unit,
     onDismissMessageMenu: () -> Unit,
     onDeleteClick: (MessageUi.CurrentUserMessage) -> Unit,
@@ -44,6 +45,7 @@ fun MessageListItemUi(
             is MessageUi.CurrentUserMessage -> {
                 CurrentUserMessage(
                     message = messageUi,
+                    messageWithOpenMenu = messageWithOpenMenu,
                     onMessageLongClick = { onMessageLongClick(messageUi) },
                     onDismissMessageMenu = onDismissMessageMenu,
                     onDeleteClick = { onDeleteClick(messageUi) },
@@ -93,13 +95,13 @@ fun MessageListItemLocalMessageUiPreview() {
                 id = "1",
                 content = "Hello world, this is a preview message that spans multiple lines",
                 deliveryStatus = ChatMessageDeliveryStatus.SENT,
-                isMenuOpen = true,
                 formattedSentTime = UiText.DynamicString("Friday 2:20pm")
             ),
             onRetryClick = {},
             onMessageLongClick = {},
             onDismissMessageMenu = {},
             onDeleteClick = {},
+            messageWithOpenMenu = null,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
@@ -116,13 +118,13 @@ fun MessageListItemLocalMessageRetryUiPreview() {
                 id = "1",
                 content = "Hello world, this is a preview message that spans multiple lines",
                 deliveryStatus = ChatMessageDeliveryStatus.FAILED,
-                isMenuOpen = false,
                 formattedSentTime = UiText.DynamicString("Friday 2:20pm")
             ),
             onRetryClick = {},
             onMessageLongClick = {},
             onDismissMessageMenu = {},
             onDeleteClick = {},
+            messageWithOpenMenu = null,
             modifier = Modifier
                 .fillMaxWidth()
         )
@@ -148,6 +150,7 @@ fun MessageListItemOtherMessageUiPreview() {
             onMessageLongClick = {},
             onDismissMessageMenu = {},
             onDeleteClick = {},
+            messageWithOpenMenu = null,
             modifier = Modifier
                 .fillMaxWidth()
         )

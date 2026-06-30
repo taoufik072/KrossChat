@@ -34,6 +34,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun CurrentUserMessage(
     message: MessageUi.CurrentUserMessage,
+    messageWithOpenMenu: MessageUi.CurrentUserMessage?,
     onMessageLongClick: () -> Unit,
     onDismissMessageMenu: () -> Unit,
     onDeleteClick: () -> Unit,
@@ -63,7 +64,7 @@ fun CurrentUserMessage(
             )
 
             KrossDropDownMenu(
-                isOpen = message.isMenuOpen,
+                isOpen = message.id == messageWithOpenMenu?.id,
                 onDismiss = onDismissMessageMenu,
                 items = listOf(
                     DropDownItem(
@@ -99,14 +100,13 @@ fun CurrentUserMessagePreview() {
                 id = "1",
                 content = "Hello world, this is a preview message that spans multiple lines",
                 deliveryStatus = ChatMessageDeliveryStatus.SENT,
-                isMenuOpen = true,
                 formattedSentTime = UiText.DynamicString("Friday 2:20pm")
             ),
             onRetryClick = {},
             onMessageLongClick = {},
             onDismissMessageMenu = {},
             onDeleteClick = {},
-
+            messageWithOpenMenu = null
             )
     }
 }

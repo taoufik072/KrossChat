@@ -10,6 +10,7 @@ import com.taoufikcode.chat.domain.repository.ChatMessageRepository
 import com.taoufikcode.chat.domain.repository.ChatRepository
 import com.taoufikcode.chat.domain.service.ChatConnectionClient
 import com.taoufikcode.chat.presentation.mappers.toUi
+import com.taoufikcode.chat.presentation.model.MessageUi
 import com.taoufikcode.core.domain.auth.SessionStorage
 import com.taoufikcode.core.domain.util.onFailure
 import com.taoufikcode.core.domain.util.onSuccess
@@ -76,7 +77,9 @@ class ChatDetailViewModel(
         }
 
         currentState.copy(
-            chatUi = chatInfo.chat.toUi(authInfo.user.id)
+            chatUi = chatInfo.chat.toUi(authInfo.user.id),
+            messages = chatInfo.messages.map { it.toUi(authInfo.user.id) }
+
         )
     }
 
@@ -109,14 +112,23 @@ class ChatDetailViewModel(
             ChatDetailAction.OnBackClick -> {}
             ChatDetailAction.OnChatMembersClick -> {}
             ChatDetailAction.OnChatOptionsClick -> onChatOptionsClick()
-            is ChatDetailAction.OnDeleteMessageClick -> {}
+            is ChatDetailAction.OnDeleteMessageClick -> deleteMessage(action.message)
             ChatDetailAction.OnDismissChatOptions -> onDismissChatOptions()
-            ChatDetailAction.OnDismissMessageMenu -> {}
+            ChatDetailAction.OnDismissMessageMenu -> onDismissMessageMenu()
             ChatDetailAction.OnLeaveChatClick -> onLeaveChatClick()
-            is ChatDetailAction.OnMessageLongClick -> {}
-            is ChatDetailAction.OnRetryClick -> {}
+            is ChatDetailAction.OnMessageLongClick -> onMessageLongClick(action.message)
+            is ChatDetailAction.OnRetryClick -> retryMessage(action.message)
             ChatDetailAction.OnScrollToTop -> {}
             ChatDetailAction.OnSendMessageClick -> sendMessage()
+        }
+    }
+    private fun retryMessage(message: MessageUi.CurrentUserMessage) {
+        viewModelScope.launch {
+            messageRepository
+                .retryMessage(message.id)
+                .onFailure { error ->
+                    eventChannel.send(ChatDetailEvent.OnError(error.toUiText()))
+                }
         }
     }
     @OptIn(ExperimentalUuidApi::class)
@@ -162,17 +174,6 @@ class ChatDetailViewModel(
                 messageRepository.getMessagesForChat(chatId)
             } else emptyFlow()
         }
-            .combine(sessionStorage.observeAuthInfo()) { messages, authInfo ->
-                if (authInfo == null) {
-                    return@combine messages
-                }
-                _state.update {
-                    it.copy(
-                        messages = messages.map { it.toUi(authInfo.user.id) }
-                    )
-                }
-                messages
-            }
 
         val isNearBottom = state.map { it.isNearBottom }.distinctUntilChanged()
 
@@ -225,7 +226,27 @@ class ChatDetailViewModel(
     private fun onDismissChatOptions() {
         _state.update { it.copy(isChatOptionsOpen = false) }
     }
+    private fun onDismissMessageMenu() {
+        _state.update { it.copy(
+            messageWithOpenMenu = null
+        ) }
+    }
 
+    private fun onMessageLongClick(message: MessageUi.CurrentUserMessage) {
+        _state.update { it.copy(
+            messageWithOpenMenu = message
+        ) }
+    }
+
+    private fun deleteMessage(message: MessageUi.CurrentUserMessage) {
+        viewModelScope.launch {
+            messageRepository
+                .deleteMessage(message.id)
+                .onFailure { error ->
+                    eventChannel.send(ChatDetailEvent.OnError(error.toUiText()))
+                }
+        }
+    }
     private fun onLeaveChatClick() {
 
         val chatId = _chatId.value ?: return

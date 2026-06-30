@@ -28,6 +28,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import kotlin.onSuccess
+import kotlin.time.Clock
 
 class ChatMessageRepositoryImpl(
     private val chatLocalDataBase: KrossChatDatabase,
@@ -55,11 +57,10 @@ class ChatMessageRepositoryImpl(
                 .sendMessage(dto.toJsonPayload())
                 .onFailure { error ->
                     applicationScope.launch {
-                        chatLocalDataBase.messageDao.upsertMessage(
-                            dto.toEntity(
-                                senderId = localUser.id,
-                                deliveryStatus = ChatMessageDeliveryStatus.FAILED
-                            )
+                        chatLocalDataBase.messageDao.updateDeliveryStatus(
+                            messageId = entity.messageId,
+                            timestamp = Clock.System.now().toEpochMilliseconds(),
+                            status = ChatMessageDeliveryStatus.FAILED.name
                         )
                     }.join()
                 }
@@ -87,12 +88,53 @@ class ChatMessageRepositoryImpl(
             }
     }
 
+    override suspend fun retryMessage(messageId: String): EmptyResult<DataError> {
+        return safeDatabaseUpdate {
+            val message = chatLocalDataBase.messageDao.getMessageById(messageId)
+                ?: return Result.Failure(DataError.Local.NOT_FOUND)
+
+
+            chatLocalDataBase.messageDao.updateDeliveryStatus(
+                messageId = messageId,
+                timestamp = Clock.System.now().toEpochMilliseconds(),
+                status = ChatMessageDeliveryStatus.SENDING.name
+            )
+
+            val outgoingNewMessage = OutgoingWebSocketDto.NewMessage(
+                chatId = message.chatId,
+                messageId = messageId,
+                content = message.content
+            )
+            return webSocketConnector
+                .sendMessage(outgoingNewMessage.toJsonPayload())
+                .onFailure {
+                    applicationScope.launch {
+                        chatLocalDataBase.messageDao.upsertMessage(
+                            message.copy(
+                                deliveryStatus = ChatMessageDeliveryStatus.FAILED.name,
+                                timestamp = Clock.System.now().toEpochMilliseconds()
+                            )
+                        )
+                    }.join()
+                }
+        }
+    }
+
     override fun getMessagesForChat(chatId: String): Flow<List<MessageWithSender>> {
         return chatLocalDataBase
             .messageDao
             .getMessagesByChatId(chatId)
             .map { messages ->
                 messages.map { it.toDomain() }
+            }
+    }
+    override suspend fun deleteMessage(messageId: String): EmptyResult<DataError.Remote> {
+        return chatRemoteDataSource
+            .deleteMessage(messageId)
+            .onSuccess {
+                applicationScope.launch {
+                    chatLocalDataBase.messageDao.deleteMessageById(messageId)
+                }.join()
             }
     }
     private fun OutgoingWebSocketDto.NewMessage.toJsonPayload(): String {

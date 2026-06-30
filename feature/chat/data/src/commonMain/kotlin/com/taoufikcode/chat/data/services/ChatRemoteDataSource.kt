@@ -78,6 +78,12 @@ class ChatRemoteDataSource(
             }
         )
     }
+     suspend fun deleteMessage(messageId: String): EmptyResult<DataError.Remote> {
+        return httpClient.delete(
+            route = "/messages/$messageId"
+        )
+    }
+
 
     companion object {
         const val PAGE_SIZE = 20

@@ -177,7 +177,6 @@ class KtorWebSocketConnector(
         }
         currentSession?.let { session ->
             _connectionState.value = ConnectionState.CONNECTED
-
             session
                 .incoming
                 .consumeAsFlow()

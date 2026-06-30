@@ -36,7 +36,8 @@ interface MessageDao {
     """)
     fun getMessagesByChatIdLimited(chatId: String, limit: Int): Flow<List<MessageEntity>>
 
-
+    @Query("SELECT * FROM messageentity WHERE messageId = :messageId")
+    suspend fun getMessageById(messageId: String): MessageEntity?
 
     @Query("""
         UPDATE messageentity

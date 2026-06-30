@@ -22,6 +22,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun MessageList(
     messages: List<MessageUi>,
+    messageWithOpenMenu: MessageUi.CurrentUserMessage?,
     listState: LazyListState,
     onMessageLongClick: (MessageUi.CurrentUserMessage) -> Unit,
     onMessageRetryClick: (MessageUi.CurrentUserMessage) -> Unit,
@@ -54,6 +55,7 @@ fun MessageList(
             ) { message ->
                 MessageListItemUi(
                     messageUi = message,
+                    messageWithOpenMenu = messageWithOpenMenu,
                     onMessageLongClick = onMessageLongClick,
                     onDismissMessageMenu = onDismissMessageMenu,
                     onDeleteClick = onDeleteMessageClick,
