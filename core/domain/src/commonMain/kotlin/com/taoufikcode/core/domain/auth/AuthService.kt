@@ -26,4 +26,9 @@ interface AuthService {
         newPassword: String,
         token: String
     ): EmptyResult<DataError.Remote>
+
+    suspend fun changePassword(
+        currentPassword: String,
+        newPassword: String
+    ): EmptyResult<DataError.Remote>
 }

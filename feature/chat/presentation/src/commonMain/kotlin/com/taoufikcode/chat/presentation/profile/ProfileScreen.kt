@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.taoufikcode.chat.presentation.profile.components.ProfileHeaderSection
@@ -36,6 +37,7 @@ import com.taoufikcode.core.designsystem.components.dialogs.KrossAdaptiveDialogS
 import com.taoufikcode.core.designsystem.components.textfields.KrossPasswordTextField
 import com.taoufikcode.core.designsystem.components.textfields.KrossTextField
 import com.taoufikcode.core.designsystem.theme.KrossChatTheme
+import com.taoufikcode.core.designsystem.theme.extended
 import com.taoufikcode.core.presentation.utils.DeviceConfiguration
 import com.taoufikcode.core.presentation.utils.clearFocusOnTap
 import com.taoufikcode.core.presentation.utils.currentDeviceConfiguration
@@ -50,6 +52,7 @@ import krosschat.feature.chat.presentation.generated.resources.delete_profile_pi
 import krosschat.feature.chat.presentation.generated.resources.email
 import krosschat.feature.chat.presentation.generated.resources.new_password
 import krosschat.feature.chat.presentation.generated.resources.password
+import krosschat.feature.chat.presentation.generated.resources.password_change_successful
 import krosschat.feature.chat.presentation.generated.resources.password_hint
 import krosschat.feature.chat.presentation.generated.resources.profile_image
 import krosschat.feature.chat.presentation.generated.resources.save
@@ -194,8 +197,7 @@ fun ProfileScreen(
                     onAction(ProfileAction.OnToggleCurrentPasswordVisibility)
                 },
                 placeholder = stringResource(Res.string.current_password),
-                isError = state.currentPasswordError != null,
-                supportingText = state.currentPasswordError?.asString()
+                isError = state.newPasswordError != null,
             )
             KrossPasswordTextField(
                 state = state.newPasswordTextState,
@@ -208,6 +210,15 @@ fun ProfileScreen(
                 supportingText = state.newPasswordError?.asString()
                     ?: stringResource(Res.string.password_hint)
             )
+            if (state.isPasswordChangeSuccessful) {
+                Text(
+                    text = stringResource(Res.string.password_change_successful),
+                    color = MaterialTheme.colorScheme.extended.success,
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),

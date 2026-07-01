@@ -1,6 +1,7 @@
 package com.taoufikcode.core.data.repository
 
 import com.taoufikcode.core.data.dto.AuthInfoDto
+import com.taoufikcode.core.data.dto.ChangePasswordDto
 import com.taoufikcode.core.data.dto.EmailDto
 import com.taoufikcode.core.data.dto.LoginDto
 import com.taoufikcode.core.data.dto.RegisterDto
@@ -75,6 +76,18 @@ class AuthRepository(private val httpClient: HttpClient
             body = ResetPasswordDto(
                 newPassword = newPassword,
                 token = token
+            )
+        )
+    }
+    override suspend fun changePassword(
+        currentPassword: String,
+        newPassword: String
+    ): EmptyResult<DataError.Remote> {
+        return httpClient.post(
+            route = "/auth/change-password",
+            body = ChangePasswordDto(
+                oldPassword = currentPassword,
+                newPassword = newPassword
             )
         )
     }
