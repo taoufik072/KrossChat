@@ -63,7 +63,8 @@ fun ChatListRoot(
         viewModel.onAction(ChatListAction.OnSelectChat(selectedChatId))
     }
     ChatListScreen(
-        state = state, onAction = { action ->
+        state = state,
+        onAction = { action ->
             when (action) {
                 is ChatListAction.OnSelectChat -> onChatClick(action.chatId)
                 ChatListAction.OnConfirmLogout -> onConfirmLogoutClick()

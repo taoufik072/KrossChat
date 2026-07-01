@@ -99,59 +99,25 @@ fun ProfileAvatarSection(
                 onClick = onClick
             )
         }
-        DropdownMenu(
-            expanded = isMenuOpen,
-            shape = RoundedCornerShape(16.dp),
-            onDismissRequest = onDismissMenu,
-            containerColor = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.extended.surfaceOutline
+
+        KrossDropDownMenu(
+            isOpen = isMenuOpen,
+            onDismiss = onDismissMenu,
+            items = listOf(
+                DropDownItem(
+                    title = stringResource(Res.string.profile_settings),
+                    icon = vectorResource(DesignSystemRes.drawable.users_icon),
+                    contentColor = MaterialTheme.colorScheme.extended.textSecondary,
+                    onClick = onProfileSettingsClick
+                ),
+                DropDownItem(
+                    title = stringResource(Res.string.logout),
+                    icon = vectorResource(DesignSystemRes.drawable.log_out_icon),
+                    contentColor = MaterialTheme.colorScheme.extended.destructiveHover,
+                    onClick = onLogoutClick
+                ),
             )
-        ) {
-            KrossDropDownMenu(
-                isOpen = isMenuOpen,
-                onDismiss = onDismissMenu,
-                items = listOf(
-                    DropDownItem(
-                        title = stringResource(Res.string.profile_settings),
-                        icon = vectorResource(DesignSystemRes.drawable.users_icon),
-                        contentColor = MaterialTheme.colorScheme.extended.textSecondary,
-                        onClick = onProfileSettingsClick
-                    ),
-                    DropDownItem(
-                        title = stringResource(Res.string.logout),
-                        icon = vectorResource(DesignSystemRes.drawable.log_out_icon),
-                        contentColor = MaterialTheme.colorScheme.extended.destructiveHover,
-                        onClick = onLogoutClick
-                    ),
-                )
-            )
-            KrossHorizontalDivider()
-            DropdownMenuItem(
-                text = {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Icon(
-                            imageVector = vectorResource(DesignSystemRes.drawable.log_out_icon),
-                            contentDescription = stringResource(Res.string.logout),
-                            tint = MaterialTheme.colorScheme.extended.destructiveHover,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(
-                            text = stringResource(Res.string.logout),
-                            color = MaterialTheme.colorScheme.extended.destructiveHover,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                },
-                onClick = {
-                    onDismissMenu()
-                    onLogoutClick()
-                }
-            )
-        }
+        )
     }
 }
 
