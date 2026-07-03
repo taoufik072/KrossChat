@@ -84,9 +84,8 @@ fun ProfileRoot(
             onAction = { action ->
                 when (action) {
                     is ProfileAction.OnDismiss -> onDismiss()
-                    is ProfileAction.OnUploadPictureClick -> {
-                        launcher.launch()
-                    }
+                    is ProfileAction.OnUploadPictureClick -> launcher.launch()
+
                     else -> Unit
                 }
                 viewModel.onAction(action)
