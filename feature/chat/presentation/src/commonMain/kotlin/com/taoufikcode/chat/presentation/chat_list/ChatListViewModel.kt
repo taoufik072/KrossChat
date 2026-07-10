@@ -4,6 +4,7 @@ package com.taoufikcode.chat.presentation.chat_list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.taoufikcode.chat.domain.repository.ChatRepository
+import com.taoufikcode.chat.domain.repository.ProfileRepository
 import com.taoufikcode.chat.presentation.mappers.toUi
 import com.taoufikcode.core.domain.auth.AuthService
 import com.taoufikcode.core.domain.auth.SessionStorage
@@ -26,7 +27,9 @@ class ChatListViewModel(
     private val repository: ChatRepository,
     private val sessionStorage: SessionStorage,
     private val deviceTokenService: DeviceTokenService,
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val profileRepository: ProfileRepository
+
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -50,6 +53,7 @@ class ChatListViewModel(
     }
         .onStart {
             if (!hasLoadedInitialData) {
+                fetchLocalUserProfile()
                 loadChats()
                 hasLoadedInitialData = true
             }
@@ -96,6 +100,11 @@ class ChatListViewModel(
     private fun loadChats() {
         viewModelScope.launch {
             repository.fetchChats()
+        }
+    }
+    private fun fetchLocalUserProfile() {
+        viewModelScope.launch {
+            profileRepository.fetchCurrentUser()
         }
     }
     private fun logout() {

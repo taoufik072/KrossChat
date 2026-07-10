@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -264,7 +265,11 @@ fun ChatDetailScreen(
                             ) {
                                 MessageBox(
                                     modifier = Modifier.fillMaxWidth()
-                                        .padding(8.dp),
+                                        .imePadding()
+                                        .padding(
+                                            vertical = 8.dp,
+                                            horizontal = 16.dp
+                                        ),
                                     messageTextFieldState = state.messageTextFieldState,
                                     isSendButtonEnabled = state.canSendMessage,
                                     connectionState = state.connectionState,
@@ -283,15 +288,22 @@ fun ChatDetailScreen(
                     AnimatedVisibility(
                         visible = configuration.isWideScreen && state.chatUi != null
                     ) {
-                        MessageBox(
-                            messageTextFieldState = state.messageTextFieldState,
-                            isSendButtonEnabled = state.canSendMessage,
-                            connectionState = state.connectionState,
-                            onSendClick = {
-                                onAction(ChatDetailAction.OnSendMessageClick)
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                        DynamicRoundedCornerColumn(
+                            isCornersRounded = configuration.isWideScreen
+                        ) {
+                            MessageBox(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .imePadding()
+                                    .padding(8.dp),
+                                messageTextFieldState = state.messageTextFieldState,
+                                isSendButtonEnabled = state.canSendMessage,
+                                connectionState = state.connectionState,
+                                onSendClick = {
+                                    onAction(ChatDetailAction.OnSendMessageClick)
+                                }
+                            )
+                        }
                     }
                 }
             }
