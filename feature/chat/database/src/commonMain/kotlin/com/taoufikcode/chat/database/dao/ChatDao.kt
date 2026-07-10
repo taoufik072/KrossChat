@@ -6,10 +6,10 @@ import androidx.room.Transaction
 import androidx.room.Upsert
 import com.taoufikcode.chat.database.entities.ChatEntity
 import com.taoufikcode.chat.database.entities.ChatInfoEntity
-import com.taoufikcode.chat.database.entities.MessageEntity
 import com.taoufikcode.chat.database.entities.ChatParticipantJoin
-import com.taoufikcode.chat.database.entities.ParticipantEntity
 import com.taoufikcode.chat.database.entities.ChatWithParticipantsEntity
+import com.taoufikcode.chat.database.entities.MessageEntity
+import com.taoufikcode.chat.database.entities.ParticipantEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -23,6 +23,9 @@ interface ChatDao {
 
     @Query("DELETE FROM chatentity WHERE chatId = :chatId")
     suspend fun deleteChatById(chatId: String)
+
+    @Query("UPDATE chatentity SET lastActivityAt = :lastActivityAt WHERE chatId = :chatId")
+    suspend fun updateLastActivityAt(chatId: String, lastActivityAt: Long)
 
     @Query("SELECT * FROM chatentity ORDER BY lastActivityAt DESC")
     fun getChatsWithParticipants(): Flow<List<ChatWithParticipantsEntity>>
