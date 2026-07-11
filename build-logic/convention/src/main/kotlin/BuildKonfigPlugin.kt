@@ -8,6 +8,7 @@ import org.gradle.kotlin.dsl.configure
 import java.io.File
 import java.util.Properties
 
+@Suppress("unused") // implementationClass in ./convention/build.gradle.kts
 class BuildKonfigPlugin : Plugin<Project> {
     override fun apply(target: Project) {
 

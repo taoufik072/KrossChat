@@ -4,6 +4,7 @@ import org.gradle.api.Project
 import org.gradle.internal.Actions.with
 import org.gradle.kotlin.dsl.dependencies
 
+@Suppress("unused") // implementationClass in /convention/build.gradle.kts
 class CmpLibraryPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with( target){

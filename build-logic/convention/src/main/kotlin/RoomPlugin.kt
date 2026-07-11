@@ -5,6 +5,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
+@Suppress("unused") // implementationClass in /convention/build.gradle.kts
 class RoomPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
