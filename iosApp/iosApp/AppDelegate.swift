@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import ComposeApp
+import Shared
 import UIKit
 import UserNotifications
 import FirebaseCore
