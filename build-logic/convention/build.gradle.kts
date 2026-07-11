@@ -6,7 +6,7 @@ plugins{
 group="com.taoufikcode.convention.buildlogic"
 
 dependencies{
-    compileOnly(libs.android.gradlePlugin)
+    compileOnly(libs.android.gradlePluginApi)
     compileOnly(libs.android.tools.common)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.compose.gradlePlugin)

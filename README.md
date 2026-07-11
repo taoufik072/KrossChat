@@ -67,10 +67,12 @@ KrossChat/
 │       ├── database/          ← schema: feature/chat/database/README.md
 │       └── presentation/
 │
-├── composeApp/
+├── shared/
 │   ├── commonMain/
 │   ├── androidMain/
 │   └── iosMain/
+│
+├── androidApp/
 │
 └── iosApp/
 ```
@@ -114,7 +116,7 @@ user is redirected to login.
 
 ### Deep linking
 
-`DeepLinkListener` intercepts incoming URIs in `composeApp`. Email-verification and password-reset
+`DeepLinkListener` intercepts incoming URIs in `shared`. Email-verification and password-reset
 links are routed to the matching screens in `AuthGraph` via `ExternalUriHandler`.
 
 ### Adaptive layouts
@@ -127,7 +129,9 @@ composable.
 The chat data source opens a persistent Ktor WebSocket session and exposes incoming messages as a `Flow<ChatMessage>`. The repository combines the live flow with cached Room data to deliver an offline-first experience.
 
 ### Koin DI
-Each layer declares its own Koin module. All modules are assembled in `:composeApp` via `startKoin { modules(...) }`. Composables obtain ViewModels with `koinViewModel()`.
+
+Each layer declares its own Koin module. All modules are assembled in `:shared` via
+`startKoin { modules(...) }`. Composables obtain ViewModels with `koinViewModel()`.
 
 ---
 

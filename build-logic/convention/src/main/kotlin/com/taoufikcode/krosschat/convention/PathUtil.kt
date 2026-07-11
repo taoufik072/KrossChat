@@ -10,15 +10,8 @@ fun Project.pathToPackageName(): String {
     return "com.taoufikcode$relativePackageName"
 }
 
-fun Project.pathToResourcePrefix(): String {
-    return path.replace(
-        ":", "_"
-    ).lowercase()
-        .drop(1) + "_"
-}
-
 fun Project.pathToFrameworkName(): String {
-    val parts = this.path.split(":", "-", "_", "")
+    val parts = this.path.split(":", "-", "_").filter { it.isNotEmpty() }
     val result = parts.joinToString("") { part ->
         part.replaceFirstChar {
             it.titlecase(Locale.ROOT)

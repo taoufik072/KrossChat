@@ -25,7 +25,8 @@ class AndroidApplicationPlugin: Plugin<Project>{
                 }
                 packaging {
                     resources {
-                        excludes += "/META-INF/{AL2.0,LGPL2.1}"
+                        excludes.add("/META-INF/AL2.0")
+                        excludes.add("/META-INF/LGPL2.1")
                     }
                 }
                 buildTypes {
