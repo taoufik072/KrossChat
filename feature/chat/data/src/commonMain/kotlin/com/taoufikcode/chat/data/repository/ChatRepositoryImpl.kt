@@ -8,6 +8,9 @@ import com.taoufikcode.chat.data.services.ChatSyncData
 import com.taoufikcode.chat.database.KrossChatDatabase
 import com.taoufikcode.chat.database.entities.ChatReadStateEntity
 import com.taoufikcode.chat.database.entities.ChatWithParticipantsEntity
+import com.taoufikcode.chat.database.entities.ChatEntity
+import com.taoufikcode.chat.database.entities.ParticipantEntity
+import com.taoufikcode.chat.database.entities.ChatParticipantJoin
 import com.taoufikcode.chat.domain.models.Chat
 import com.taoufikcode.chat.domain.models.ChatInfo
 import com.taoufikcode.chat.domain.models.ChatParticipant
@@ -18,12 +21,17 @@ import com.taoufikcode.core.domain.util.EmptyResult
 import com.taoufikcode.core.domain.util.Result
 import com.taoufikcode.core.domain.util.map
 import com.taoufikcode.core.domain.util.onSuccess
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlin.time.Clock
 
 class ChatRepositoryImpl(
@@ -31,6 +39,7 @@ class ChatRepositoryImpl(
     private val chatSyncDataSource: ChatSyncData,
     private val chatLocalDataBase: KrossChatDatabase,
     private val sessionStorage: SessionStorage,
+    private val applicationScope: CoroutineScope
 ) : ChatRepository {
 
     override suspend fun searchParticipant(query: String): Result<ChatParticipant, DataError.Remote> {
@@ -51,6 +60,12 @@ class ChatRepositoryImpl(
 
     override fun observeChats(): Flow<List<Chat>> {
         val currentUserId = sessionStorage.observeAuthInfo().map { it?.user?.id }
+
+        currentUserId.onEach { userId ->
+            if (userId != null) {
+                ensureGeminiChatExists(userId)
+            }
+        }.launchIn(applicationScope)
 
         return combine(
             chatLocalDataBase.chatDao.getChatsWithParticipants(),
@@ -133,6 +148,9 @@ class ChatRepositoryImpl(
     }
 
     override suspend fun getChatById(chatId: String): EmptyResult<DataError.Remote> {
+        if (chatId == "gemini_chat") {
+            return Result.Success(Unit)
+        }
         return chatSyncDataSource.refreshChatById(chatId)
 
     }
@@ -175,6 +193,57 @@ class ChatRepositoryImpl(
             participantDao = chatLocalDataBase.participantDao,
             crossRefDao = chatLocalDataBase.chatParticipantsJoinDao
         )
+    }
+
+    private suspend fun ensureGeminiChatExists(userId: String) {
+        val chatExists = chatLocalDataBase.chatDao.getChatById("gemini_chat") != null
+        if (!chatExists) {
+            val now = Clock.System.now().toEpochMilliseconds()
+            
+            // Insert Gemini Bot participant
+            chatLocalDataBase.participantDao.upsertParticipant(
+                ParticipantEntity(
+                    userId = "gemini_bot",
+                    username = "Gemini AI",
+                    profilePictureUrl = null
+                )
+            )
+            
+            // Insert current user participant (to make sure they are in the participants table)
+            val localUser = sessionStorage.observeAuthInfo().first()?.user
+            val username = localUser?.userName ?: "User"
+            chatLocalDataBase.participantDao.upsertParticipant(
+                ParticipantEntity(
+                    userId = userId,
+                    username = username,
+                    profilePictureUrl = localUser?.profilePictureUrl
+                )
+            )
+
+            // Insert ChatEntity
+            chatLocalDataBase.chatDao.upsertChat(
+                ChatEntity(
+                    chatId = "gemini_chat",
+                    lastActivityAt = now
+                )
+            )
+
+            // Insert Joins
+            chatLocalDataBase.chatParticipantsJoinDao.upsertCrossRefs(
+                listOf(
+                    ChatParticipantJoin(chatId = "gemini_chat", userId = userId, isActive = true),
+                    ChatParticipantJoin(chatId = "gemini_chat", userId = "gemini_bot", isActive = true)
+                )
+            )
+
+            // Insert Read State
+            chatLocalDataBase.chatReadStateDao.upsertReadState(
+                ChatReadStateEntity(
+                    chatId = "gemini_chat",
+                    lastReadAt = now
+                )
+            )
+        }
     }
 
 }

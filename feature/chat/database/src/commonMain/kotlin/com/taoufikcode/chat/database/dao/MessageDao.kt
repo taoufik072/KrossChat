@@ -47,6 +47,13 @@ interface MessageDao {
     suspend fun updateDeliveryStatus(messageId: String, status: String, timestamp: Long)
 
     @Query("""
+        UPDATE messageentity
+        SET content = :content
+        WHERE messageId = :messageId
+    """)
+    suspend fun updateMessageContent(messageId: String, content: String)
+
+    @Query("""
         SELECT m.chatId AS chatId, COUNT(*) AS unreadCount
         FROM messageentity m
         LEFT JOIN chatreadstateentity r ON r.chatId = m.chatId

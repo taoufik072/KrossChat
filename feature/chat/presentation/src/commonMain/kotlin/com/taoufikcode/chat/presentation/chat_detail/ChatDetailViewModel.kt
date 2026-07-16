@@ -77,8 +77,9 @@ class ChatDetailViewModel(
 
     private val canSendMessage = snapshotFlow { _state.value.messageTextFieldState.text.toString() }
         .map { it.isBlank() }
-        .combine(connectionClient.connectionState) { isMessageBlank, connectionState ->
-            !isMessageBlank && connectionState == ConnectionState.CONNECTED
+        .combine(_chatId) { isBlank, chatId -> isBlank to chatId }
+        .combine(connectionClient.connectionState) { (isBlank, chatId), connectionState ->
+            !isBlank && (chatId == "gemini_chat" || connectionState == ConnectionState.CONNECTED)
         }
 
     private val stateWithMessages = combine(

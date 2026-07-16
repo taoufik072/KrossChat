@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.taoufikcode.chat.domain.models.ChatMessage
 import com.taoufikcode.chat.domain.models.ChatMessageDeliveryStatus
+import com.taoufikcode.chat.domain.models.ConnectionState
 import com.taoufikcode.chat.presentation.chat_detail.components.ChatDetailHeader
 import com.taoufikcode.chat.presentation.chat_detail.components.DateChip
 import com.taoufikcode.chat.presentation.chat_detail.components.MessageBannerListener
@@ -272,7 +273,7 @@ fun ChatDetailScreen(
                                         ),
                                     messageTextFieldState = state.messageTextFieldState,
                                     isSendButtonEnabled = state.canSendMessage,
-                                    connectionState = state.connectionState,
+                                    connectionState = if (state.chatUi?.id == "gemini_chat") ConnectionState.CONNECTED else state.connectionState,
                                     onSendClick = {
                                         onAction(ChatDetailAction.OnSendMessageClick)
                                     }
@@ -298,7 +299,7 @@ fun ChatDetailScreen(
                                     .padding(8.dp),
                                 messageTextFieldState = state.messageTextFieldState,
                                 isSendButtonEnabled = state.canSendMessage,
-                                connectionState = state.connectionState,
+                                connectionState = if (state.chatUi?.id == "gemini_chat") ConnectionState.CONNECTED else state.connectionState,
                                 onSendClick = {
                                     onAction(ChatDetailAction.OnSendMessageClick)
                                 }

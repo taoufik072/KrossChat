@@ -53,6 +53,8 @@ class BuildKonfigPlugin : Plugin<Project> {
                             "missing API_KEY property in local.properties"
                         )
                     buildConfigField(FieldSpec.Type.STRING,"API_KEY",apiKey)
+                    val geminiApiKey = localProperties.getProperty("GEMINI_API_KEY") ?: ""
+                    buildConfigField(FieldSpec.Type.STRING,"GEMINI_API_KEY",geminiApiKey)
                 }
             }
         }

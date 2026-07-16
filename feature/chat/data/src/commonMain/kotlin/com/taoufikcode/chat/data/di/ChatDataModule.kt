@@ -2,6 +2,7 @@ package com.taoufikcode.chat.data.di
 
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.taoufikcode.chat.data.network.ConnectionRetryHandler
+import com.taoufikcode.chat.data.network.GeminiClient
 import com.taoufikcode.chat.data.network.KtorWebSocketConnector
 import com.taoufikcode.chat.data.network.WebSocketChatConnectionClient
 import com.taoufikcode.chat.data.repository.ChatMessageRepositoryImpl
@@ -33,6 +34,7 @@ val chatDataModule = module {
     singleOf(::ConnectionRetryHandler)
     singleOf(::KtorWebSocketConnector)
     singleOf(::ChatRemoteDataSource)
+    singleOf(::GeminiClient)
     single {
         get<DatabaseFactory>()
             .create()

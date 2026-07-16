@@ -94,7 +94,7 @@ interface ChatDao {
 
         val serverChatIds = chats.map { it.chat.chatId }
         val localChatIds = getAllChatIds()
-        val staleChatIds = localChatIds - serverChatIds.toSet()
+        val staleChatIds = (localChatIds - serverChatIds.toSet()).filter { it != "gemini_chat" }
 
         chats.forEach { chat ->
             chat.lastMessage?.run {
