@@ -1,29 +1,14 @@
 <?xml version="1.0" ?>
 <SmellBaseline>
-  <ManuallySuppressedIssues />
+  <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>CyclomaticComplexMethod:ChatDetailViewModel.kt$ChatDetailViewModel$fun onAction(action:
-      ChatDetailAction)
-    </ID>
+    <ID>CyclomaticComplexMethod:ChatDetailViewModel.kt$ChatDetailViewModel$fun onAction(action: ChatDetailAction)</ID>
     <ID>CyclomaticComplexMethod:DataErrorToUi.kt$fun DataError.toUiText(): UiText</ID>
-    <ID>CyclomaticComplexMethod:KrossButton.kt$@Composable fun KrossButton( text: String, onClick:
-      () -&gt; Unit, modifier: Modifier = Modifier, style: KrossButtonStyle =
-      KrossButtonStyle.PRIMARY, enabled: Boolean = true, isLoading: Boolean = false, leadingIcon:
-      @Composable (() -&gt; Unit)? = null )
-    </ID>
+    <ID>CyclomaticComplexMethod:KrossButton.kt$@Composable fun KrossButton( text: String, onClick: () -&gt; Unit, modifier: Modifier = Modifier, style: KrossButtonStyle = KrossButtonStyle.PRIMARY, enabled: Boolean = true, isLoading: Boolean = false, leadingIcon: @Composable (() -&gt; Unit)? = null )</ID>
     <ID>FunctionNaming:MainViewController.kt$fun MainViewController()</ID>
-    <ID>LongMethod:AuthGraph.kt$fun NavGraphBuilder.authGraph( navController: NavController,
-      onLoginSuccess: () -&gt; Unit, )
-    </ID>
-    <ID>LongMethod:HttpClientFactory.kt$HttpClientFactory$fun create(httpClientEngine:
-      HttpClientEngine): HttpClient
-    </ID>
-    <ID>LongParameterList:KtorWebSocketConnector.kt$KtorWebSocketConnector$( private val httpClient:
-      HttpClient, private val logger: KrossChatLogger, private val json: Json, private val
-      connectionErrorHandler: ConnectionErrorHandler, private val connectionRetryHandler:
-      ConnectionRetryHandler, appLifecycleObserver: AppLifecycleObserver, connectivityObserver:
-      ConnectivityObserver, applicationScope: CoroutineScope, sessionStorage: SessionStorage, )
-    </ID>
+    <ID>LongMethod:AuthGraph.kt$fun NavGraphBuilder.authGraph( navController: NavController, onLoginSuccess: () -&gt; Unit, )</ID>
+    <ID>LongMethod:HttpClientFactory.kt$HttpClientFactory$fun create(httpClientEngine: HttpClientEngine): HttpClient</ID>
+    <ID>LongParameterList:KtorWebSocketConnector.kt$KtorWebSocketConnector$( private val httpClient: HttpClient, private val logger: KrossChatLogger, private val json: Json, private val connectionErrorHandler: ConnectionErrorHandler, private val connectionRetryHandler: ConnectionRetryHandler, appLifecycleObserver: AppLifecycleObserver, connectivityObserver: ConnectivityObserver, applicationScope: CoroutineScope, sessionStorage: SessionStorage, )</ID>
     <ID>LoopWithTooManyJumpStatements:rememberImagePickerLauncher.ios.kt$&lt;no name provided&gt;$for</ID>
     <ID>MagicNumber:AddParticipantsViewModel.kt$AddParticipantsViewModel$5_000L</ID>
     <ID>MagicNumber:ChatDetailViewModel.kt$ChatDetailViewModel$5_000L</ID>
@@ -109,31 +94,15 @@
     <ID>MatchingDeclarationName:PermissionController.mobile.kt$PermissionController</ID>
     <ID>MatchingDeclarationName:Platform.android.kt$AndroidPlatform : Platform</ID>
     <ID>MatchingDeclarationName:Platform.ios.kt$IOSPlatform : Platform</ID>
-    <ID>MaxLineLength:ChatDetailScreen.kt$content = "lorem ipsum dolor sit amet consectetur
-      adipiscing elit sed" + " do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    </ID>
+    <ID>MaxLineLength:ChatDetailScreen.kt$content = "lorem ipsum dolor sit amet consectetur adipiscing elit sed" + " do eiusmod tempor incididunt ut labore et dolore magna aliqua."</ID>
     <ID>MaxLineLength:ChatRemoteDataSource.kt$ChatRemoteDataSource$suspend</ID>
-    <ID>MaxLineLength:KrossChatBubble.kt$" took a 1914 Cicero translation and scrambled it to make
-      dummy text for Letraset's Body Type sheets. "
-    </ID>
-    <ID>ReturnCount:ChatMessageRepositoryImpl.kt$ChatMessageRepositoryImpl$override suspend fun
-      retryMessage(messageId: String): EmptyResult&lt;DataError&gt;
-    </ID>
-    <ID>ReturnCount:ChatMessageRepositoryImpl.kt$ChatMessageRepositoryImpl$override suspend fun
-      sendMessage(message: OutgoingNewMessage): EmptyResult&lt;DataError&gt;
-    </ID>
-    <ID>ReturnCount:ConnectionErrorHandler.ios.kt$ConnectionErrorHandler$actual fun
-      transformException(exception: Throwable): Throwable
-    </ID>
-    <ID>ReturnCount:ConnectionErrorHandler.ios.kt$ConnectionErrorHandler$private fun
-      Throwable.toNSError(): NSError?
-    </ID>
-    <ID>ReturnCount:ConnectionErrorHandler.ios.kt$ConnectionErrorHandler$private fun
-      extractNsError(cause: Throwable): NSError?
-    </ID>
-    <ID>ReturnCount:ProfileRepositoryImpl.kt$ProfileRepositoryImpl$override suspend fun
-      uploadProfilePicture( imageBytes: ByteArray, mimeType: String ): EmptyResult&lt;DataError.Remote&gt;
-    </ID>
+    <ID>MaxLineLength:KrossChatBubble.kt$" took a 1914 Cicero translation and scrambled it to make dummy text for Letraset's Body Type sheets. "</ID>
+    <ID>ReturnCount:ChatMessageRepositoryImpl.kt$ChatMessageRepositoryImpl$override suspend fun retryMessage(messageId: String): EmptyResult&lt;DataError&gt;</ID>
+    <ID>ReturnCount:ChatMessageRepositoryImpl.kt$ChatMessageRepositoryImpl$override suspend fun sendMessage(message: OutgoingNewMessage): EmptyResult&lt;DataError&gt;</ID>
+    <ID>ReturnCount:ConnectionErrorHandler.ios.kt$ConnectionErrorHandler$actual fun transformException(exception: Throwable): Throwable</ID>
+    <ID>ReturnCount:ConnectionErrorHandler.ios.kt$ConnectionErrorHandler$private fun Throwable.toNSError(): NSError?</ID>
+    <ID>ReturnCount:ConnectionErrorHandler.ios.kt$ConnectionErrorHandler$private fun extractNsError(cause: Throwable): NSError?</ID>
+    <ID>ReturnCount:ProfileRepositoryImpl.kt$ProfileRepositoryImpl$override suspend fun uploadProfilePicture( imageBytes: ByteArray, mimeType: String ): EmptyResult&lt;DataError.Remote&gt;</ID>
     <ID>SpreadOperator:UiText.kt$UiText$(id, *args)</ID>
     <ID>SwallowedException:HttpClientExt.android.kt$e: ConnectException</ID>
     <ID>SwallowedException:HttpClientExt.android.kt$e: Exception</ID>
@@ -147,10 +116,7 @@
     <ID>SwallowedException:HttpClientExt.ios.kt$e: SerializationException</ID>
     <ID>SwallowedException:HttpClientExt.ios.kt$e: UnresolvedAddressException</ID>
     <ID>SwallowedException:HttpClientExt.kt$e: NoTransformationFoundException</ID>
-    <ID>
-      TooGenericExceptionCaught:FirebasePushNotificationService.android.kt$FirebasePushNotificationService$e:
-      Exception
-    </ID>
+    <ID>TooGenericExceptionCaught:FirebasePushNotificationService.android.kt$FirebasePushNotificationService$e: Exception</ID>
     <ID>TooGenericExceptionCaught:HttpClientExt.android.kt$e: Exception</ID>
     <ID>TooGenericExceptionCaught:HttpClientExt.ios.kt$e: Exception</ID>
     <ID>TooGenericExceptionCaught:KtorWebSocketConnector.kt$KtorWebSocketConnector$e: Exception</ID>
@@ -162,44 +128,20 @@
     <ID>TooManyFunctions:ChatRepositoryImpl.kt$ChatRepositoryImpl : ChatRepository</ID>
     <ID>UnusedParameter:ChatGraphRoutes.kt$navController: NavController</ID>
     <ID>UnusedParameter:ConnectionRetryHandler.kt$ConnectionRetryHandler$attempt: Long</ID>
-    <ID>UnusedParameter:EmailVerificationViewModel.kt$EmailVerificationViewModel$action:
-      EmailVerificationAction
-    </ID>
-    <ID>UnusedPrivateMember:ChatDetailScreen.kt$@OptIn(ExperimentalUuidApi::class) @Preview
-      @Composable private fun ChatDetailMessagesPreview()
-    </ID>
-    <ID>UnusedPrivateMember:ChatDetailScreen.kt$@Preview @Composable private fun
-      ChatDetailEmptyPreview()
-    </ID>
-    <ID>UnusedPrivateMember:EmailVerificationScreen.kt$@Preview @Composable private fun
-      EmailVerificationErrorPreview()
-    </ID>
-    <ID>UnusedPrivateMember:EmailVerificationScreen.kt$@Preview @Composable private fun
-      EmailVerificationSuccessPreview()
-    </ID>
-    <ID>UnusedPrivateMember:EmailVerificationScreen.kt$@Preview @Composable private fun
-      EmailVerificationVerifyingPreview()
-    </ID>
+    <ID>UnusedParameter:EmailVerificationViewModel.kt$EmailVerificationViewModel$action: EmailVerificationAction</ID>
+    <ID>UnusedPrivateMember:ChatDetailScreen.kt$@OptIn(ExperimentalUuidApi::class) @Preview @Composable private fun ChatDetailMessagesPreview()</ID>
+    <ID>UnusedPrivateMember:ChatDetailScreen.kt$@Preview @Composable private fun ChatDetailEmptyPreview()</ID>
+    <ID>UnusedPrivateMember:EmailVerificationScreen.kt$@Preview @Composable private fun EmailVerificationErrorPreview()</ID>
+    <ID>UnusedPrivateMember:EmailVerificationScreen.kt$@Preview @Composable private fun EmailVerificationSuccessPreview()</ID>
+    <ID>UnusedPrivateMember:EmailVerificationScreen.kt$@Preview @Composable private fun EmailVerificationVerifyingPreview()</ID>
     <ID>UnusedPrivateMember:LoginScreen.kt$@Preview @Composable private fun DarkThemePreview()</ID>
     <ID>UnusedPrivateMember:LoginScreen.kt$@Preview @Composable private fun LightThemePreview()</ID>
-    <ID>UnusedPrivateMember:ParticipantPickerScreen.kt$@Preview @Composable private fun
-      ParticipantPickerScreenPreview()
-    </ID>
-    <ID>UnusedPrivateMember:ParticipantPickerScreen.kt$@Preview @Composable private fun
-      ParticipantPickerScreenSearchingPreview()
-    </ID>
-    <ID>UnusedPrivateMember:ProfileSectionLayout.kt$@Preview @Composable private fun
-      ProfileSectionLayoutPreview()
-    </ID>
-    <ID>UseCheckOrError:DialogSheetScopedViewModel.kt$throw IllegalStateException("No parent owner
-      found")
-    </ID>
-    <ID>UseCheckOrError:RegisterSuccessViewModel.kt$RegisterSuccessViewModel$throw
-      IllegalStateException("No email passed to register success screen")
-    </ID>
-    <ID>UseCheckOrError:ResetPasswordViewModel.kt$ResetPasswordViewModel$throw
-      IllegalStateException("No password reset token")
-    </ID>
+    <ID>UnusedPrivateMember:ParticipantPickerScreen.kt$@Preview @Composable private fun ParticipantPickerScreenPreview()</ID>
+    <ID>UnusedPrivateMember:ParticipantPickerScreen.kt$@Preview @Composable private fun ParticipantPickerScreenSearchingPreview()</ID>
+    <ID>UnusedPrivateMember:ProfileSectionLayout.kt$@Preview @Composable private fun ProfileSectionLayoutPreview()</ID>
+    <ID>UseCheckOrError:DialogSheetScopedViewModel.kt$throw IllegalStateException("No parent owner found")</ID>
+    <ID>UseCheckOrError:RegisterSuccessViewModel.kt$RegisterSuccessViewModel$throw IllegalStateException("No email passed to register success screen")</ID>
+    <ID>UseCheckOrError:ResetPasswordViewModel.kt$ResetPasswordViewModel$throw IllegalStateException("No password reset token")</ID>
     <ID>WildcardImport:ExampleInstrumentedTest.kt$import org.junit.Assert.*</ID>
   </CurrentIssues>
 </SmellBaseline>
