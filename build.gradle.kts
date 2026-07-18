@@ -53,12 +53,14 @@ sonar {
 subprojects {
     sonar {
         properties {
+            // KMP source sets are not auto-detected by the Sonar plugin; Android
+            // modules (src/main) are, so they must not be listed here or files
+            // get indexed twice.
             val sourceDirs = listOf(
                 "src/commonMain/kotlin",
                 "src/androidMain/kotlin",
                 "src/iosMain/kotlin",
                 "src/mobileMain/kotlin",
-                "src/main/kotlin",
             ).filter { file(it).isDirectory }
             val testDirs = listOf(
                 "src/commonTest/kotlin",
@@ -66,8 +68,8 @@ subprojects {
                 "src/iosTest/kotlin",
             ).filter { file(it).isDirectory }
 
-            property("sonar.sources", sourceDirs.joinToString(","))
-            property("sonar.tests", testDirs.joinToString(","))
+            if (sourceDirs.isNotEmpty()) property("sonar.sources", sourceDirs.joinToString(","))
+            if (testDirs.isNotEmpty()) property("sonar.tests", testDirs.joinToString(","))
         }
     }
 }
