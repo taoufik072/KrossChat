@@ -33,13 +33,19 @@ jobs:
         run: echo "API_KEY=${{ secrets.API_KEY }}" > local.properties
 
       - name: Run tests and coverage
-        run: ./gradlew testAndroidHostTest koverXmlReport
+        run: ./gradlew testAndroidHostTest koverXmlReport koverHtmlReport
 
-      - name: Upload test and coverage reports
+      # Single aggregated coverage report for all modules (open html/index.html)
+      - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: reports
-          path: |
-            **/build/reports/tests/**
-            build/reports/kover/**
+          name: coverage-report
+          path: build/reports/kover/**
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: '**/build/reports/tests/**'
