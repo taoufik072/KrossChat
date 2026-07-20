@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="welcome_to_kross">Bienvenue sur Kross Chat !</string>
+    <string name="welcome_back">Content de vous revoir !</string>
+    <string name="forgot_password">Mot de passe oublié ?</string>
+    <string name="set_new_password">Définir un nouveau mot de passe</string>
+    <string name="new_password">Nouveau mot de passe</string>
+    <string name="account_successfully_created">Compte créé avec succès !</string>
+    <string name="verification_email_sent_to_x">Nous avons envoyé un email de vérification à %1$s</string>
+    <string name="resend_verification_email">Renvoyer l'email de vérification</string>
+    <string name="resent_verification_email">Email de vérification renvoyé avec succès</string>
+    <string name="verifying_account">Vérification du compte...</string>
+    <string name="email_verified_successfully">Email vérifié avec succès !</string>
+    <string name="email_verified_failed">Échec de la vérification de votre email</string>
+    <string name="email_verified_successfully_desc">Votre email a été vérifié. Vous pouvez maintenant vous connecter avec vos identifiants.</string>
+    <string name="email_verified_failed_desc">Impossible de vérifier votre email. Le lien est peut-être invalide ou a expiré.</string>
+    <string name="close">Fermer</string>
+    <string name="submit">Valider</string>
+    <string name="username">Nom d'utilisateur</string>
+    <string name="create_account">Créer un compte</string>
+    <string name="password">Mot de passe</string>
+    <string name="email">Email</string>
+    <string name="register">S'inscrire</string>
+    <string name="username_placeholder">nom d'utilisateur</string>
+    <string name="email_placeholder">bonjour@mail.com</string>
+    <string name="login">Se connecter</string>
+    <string name="username_hint">Utilisez entre 3 et 20 caractères pour votre nom d'utilisateur</string>
+    <string name="password_hint">Utilisez 9 caractères ou plus, avec au moins un chiffre et une majuscule</string>
+    <string name="error_account_exists">Un compte avec cet email ou ce nom d'utilisateur existe déjà</string>
+    <string name="error_invalid_password">Le mot de passe doit contenir au moins 9 caractères, un chiffre et une majuscule</string>
+    <string name="error_invalid_email">Cet email n'est pas valide</string>
+    <string name="error_invalid_username">Le nom d'utilisateur doit contenir entre 3 et 20 caractères</string>
+    <string name="error_invalid_credentials">L'email ou le mot de passe est incorrect</string>
+    <string name="error_email_not_verified">Connexion impossible, votre email n'est pas vérifié</string>
+    <string name="error_same_password">Le nouveau mot de passe ne peut pas être identique à l'ancien</string>
+    <string name="error_reset_password_token_invalid">Il semble que le lien de réinitialisation du mot de passe ne soit pas valide ou ait expiré. Veuillez demander un nouvel email.</string>
+    <string name="forgot_password_email_sent_successfully">Nous vous avons envoyé avec succès un email contenant un lien pour réinitialiser votre mot de passe</string>
+    <string name="reset_password_successfully">Votre mot de passe a été modifié avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.</string>
+</resources>
