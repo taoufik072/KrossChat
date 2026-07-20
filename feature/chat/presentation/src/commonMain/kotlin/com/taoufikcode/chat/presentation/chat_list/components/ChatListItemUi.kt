@@ -25,7 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.taoufikcode.chat.domain.models.ChatMessage
 import com.taoufikcode.chat.domain.models.ChatMessageDeliveryStatus
 import androidx.compose.ui.Alignment
-import com.taoufikcode.chat.presentation.components.ChatItemHeaderRow
+import com.taoufikcode.chat.presentation.components.ChatAvatarCluster
+import com.taoufikcode.chat.presentation.components.ChatTitleText
 import com.taoufikcode.chat.presentation.model.ChatUi
 import com.taoufikcode.core.designsystem.components.avatar.ChatParticipantUi
 import com.taoufikcode.core.designsystem.components.badge.KrossCountBadge
@@ -54,38 +55,46 @@ fun ChatListItemUi(
             )
             .fillMaxWidth()
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .weight(1f)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            ChatItemHeaderRow(
-                chat = chat,
-                isGroupChat = isGroupChat,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
+            ChatAvatarCluster(chat = chat)
 
-            chat.lastMessage?.let { lastMessage ->
-                val previewMessage = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.extended.textSecondary,
-                        )
-                    ) {
-                        append(chat.lastMessageSenderUsername + ":")
-                    }
-                    append(lastMessage.content)
-                }
-                Text(
-                    text = previewMessage,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.extended.textSecondary,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+            Column(
+                modifier = Modifier
+                    .weight(1f),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                ChatTitleText(
+                    chat = chat,
+                    isGroupChat = isGroupChat,
+                    modifier = Modifier.fillMaxWidth()
                 )
+
+                chat.lastMessage?.let { lastMessage ->
+                    val previewMessage = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.extended.textSecondary,
+                            )
+                        ) {
+                            append(chat.lastMessageSenderUsername + ":")
+                        }
+                        append(lastMessage.content)
+                    }
+                    Text(
+                        text = previewMessage,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.extended.textSecondary,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
         if (chat.unreadCount > 0) {

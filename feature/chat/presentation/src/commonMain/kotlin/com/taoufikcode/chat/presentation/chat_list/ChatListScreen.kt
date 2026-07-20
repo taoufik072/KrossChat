@@ -150,13 +150,13 @@ fun ChatListScreen(
 
                 state.chats.isEmpty() -> {
                     EmptyListSection(
-                        modifier = Modifier.weight(1f).fillMaxWidth().padding(
-                            horizontal = 8.dp
-                        ),
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
                         title = stringResource(Res.string.no_chats),
-                        description = stringResource(Res.string.no_chats_subtitle),
-
-                        )
+                        description = stringResource(Res.string.no_chats_subtitle)
+                    )
                 }
 
                 else -> {

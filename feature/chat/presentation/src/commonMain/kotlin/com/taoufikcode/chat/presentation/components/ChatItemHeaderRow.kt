@@ -32,42 +32,75 @@ fun ChatItemHeaderRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        KrossStackedAvatars(
-            avatars = chat.otherParticipants.ifEmpty { listOf(chat.currentUser) },
-        )
+        ChatAvatarCluster(chat = chat)
         Column(
             modifier = Modifier
                 .weight(1f),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Text(
-                text = if (!isGroupChat) {
-                    chat.otherParticipants.firstOrNull()?.username ?: chat.currentUser.username
-                } else {
-                    stringResource(Res.string.group_chat)
-                },
-                style = MaterialTheme.typography.titleXSmall,
-                color = MaterialTheme.colorScheme.extended.textPrimary,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
+            ChatTitleText(
+                chat = chat,
+                isGroupChat = isGroupChat,
                 modifier = Modifier.fillMaxWidth()
             )
             if (isGroupChat) {
-                val you = stringResource(Res.string.you)
-                val formattedUsernames = remember(chat.otherParticipants) {
-                    "$you, " + chat.otherParticipants.joinToString {
-                        it.username
-                    }
-                }
-                Text(
-                    text = formattedUsernames,
-                    color = MaterialTheme.colorScheme.extended.textPlaceholder,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.fillMaxWidth(),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                ChatGroupMembersText(
+                    chat = chat,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
     }
+}
+
+@Composable
+fun ChatAvatarCluster(
+    chat: ChatUi,
+    modifier: Modifier = Modifier
+) {
+    KrossStackedAvatars(
+        avatars = chat.otherParticipants.ifEmpty { listOf(chat.currentUser) },
+        modifier = modifier
+    )
+}
+
+@Composable
+fun ChatTitleText(
+    chat: ChatUi,
+    isGroupChat: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = if (!isGroupChat) {
+            chat.otherParticipants.firstOrNull()?.username ?: chat.currentUser.username
+        } else {
+            stringResource(Res.string.group_chat)
+        },
+        style = MaterialTheme.typography.titleXSmall,
+        color = MaterialTheme.colorScheme.extended.textPrimary,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 1,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun ChatGroupMembersText(
+    chat: ChatUi,
+    modifier: Modifier = Modifier
+) {
+    val you = stringResource(Res.string.you)
+    val formattedUsernames = remember(chat.otherParticipants) {
+        "$you, " + chat.otherParticipants.joinToString {
+            it.username
+        }
+    }
+    Text(
+        text = formattedUsernames,
+        color = MaterialTheme.colorScheme.extended.textPlaceholder,
+        style = MaterialTheme.typography.bodySmall,
+        modifier = modifier,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
 }

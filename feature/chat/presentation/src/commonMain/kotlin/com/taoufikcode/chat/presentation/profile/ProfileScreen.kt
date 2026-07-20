@@ -46,7 +46,6 @@ import com.taoufikcode.core.presentation.utils.currentDeviceConfiguration
 import krosschat.core.designsystem.generated.resources.upload_icon
 import krosschat.feature.chat.presentation.generated.resources.Res
 import krosschat.feature.chat.presentation.generated.resources.cancel
-import krosschat.feature.chat.presentation.generated.resources.contact_support_change_email
 import krosschat.feature.chat.presentation.generated.resources.current_password
 import krosschat.feature.chat.presentation.generated.resources.delete
 import krosschat.feature.chat.presentation.generated.resources.delete_profile_picture
@@ -191,7 +190,6 @@ fun ProfileScreen(
             KrossTextField(
                 state = state.emailTextState,
                 enabled = false,
-                supportingText = stringResource(Res.string.contact_support_change_email)
             )
         }
         KrossHorizontalDivider()
