@@ -37,9 +37,7 @@ class WebSocketChatConnectionClient(
     override val connectionState = webSocketConnector.connectionState
 
     override val chatMessages: Flow<ChatMessage> = webSocketConnector
-        .messages
-        .mapNotNull { parse(it) }
-        .mapNotNull { handle(it) }
+        .messages.mapNotNull { parse(it) }.mapNotNull { handle(it) }
         .shareIn(
             applicationScope,
             SharingStarted.WhileSubscribed(5000)

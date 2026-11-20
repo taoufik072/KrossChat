@@ -147,10 +147,10 @@ class KtorWebSocketConnector(
                     val transformedException = connectionErrorHandler.transformException(e)
                     throw transformedException
                 }
-                .retryWhen { t, attempt ->
+                .retryWhen { throwable, attempt ->
                     logger.i(TAG) { "Connection failed on attempt $attempt" }
 
-                    val shouldRetry = connectionRetryHandler.shouldRetry(t, attempt)
+                    val shouldRetry = connectionRetryHandler.shouldRetry(throwable, attempt)
 
                     if (shouldRetry) {
                         _connectionState.value = ConnectionState.CONNECTING

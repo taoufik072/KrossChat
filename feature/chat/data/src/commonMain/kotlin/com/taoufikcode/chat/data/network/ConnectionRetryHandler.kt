@@ -2,6 +2,7 @@ package com.taoufikcode.chat.data.network
 
 import kotlinx.coroutines.delay
 import kotlin.math.pow
+import kotlin.time.Duration.Companion.milliseconds
 
 class ConnectionRetryHandler(
     private val connectionErrorHandler: ConnectionErrorHandler
@@ -15,7 +16,7 @@ class ConnectionRetryHandler(
     suspend fun applyRetryDelay(attempt: Long) {
         if(!shouldSkipBackoff) {
             val delay = createBackoffDelay(attempt)
-            delay(delay)
+            delay(delay.milliseconds)
         } else {
             shouldSkipBackoff = false
         }
