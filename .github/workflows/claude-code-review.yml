@@ -1,0 +1,49 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+    paths:
+      - '**/*.kt'
+      - '**/*.kts'
+      - 'gradle/libs.versions.toml'
+      - '**/AndroidManifest.xml'
+
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # Skip drafts and dependency bots.
+    if: github.event.pull_request.draft == false && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Claude review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Review this pull request for KrossChat, a Kotlin Multiplatform app (Android + iOS, Compose Multiplatform, Ktor, Koin, Room KMP).
+
+            Use CLAUDE.md and the rule files in .claude/rules/ that match the changed paths as the review standard.
+            Follow the checklist and output format of .claude/agents/code-reviewer.md
+            (Blocking / Should fix / Nitpicks, then a verdict).
+
+            Only comment on lines changed in this PR. Do not run Gradle.
+            Post specific issues as inline comments, and a single summary comment with the verdict.
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
